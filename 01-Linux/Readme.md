@@ -175,9 +175,13 @@ See [here](ssh.md) for different types of SSH connection with respect to your OS
 ## Your turn
 
 1. What is the ``grep``command?
-
+The "grep" command allows to identify text patterns in a specified file. Also, "grep" can search over subdirectories and through 
+several files.In addition "grep" can search for patterns in more complex structures e.g. looking for "dog", "grep" can identify 
+"god","odg","gdo" and so on. For this, it can be specified the type of file in which "grep" must do the search, e.g. " .txt or .html".
+Source: https://www.computerhope.com/unix/ugrep.htm
 2. What is the meaning of ``#!/bin/python`` at the start of scripts?
-
+the line "#!/bin/python" specifies the type of executable that the file is so, in this case, it can be open as a python executable.
+Source: https://martin-thoma.com/what-does-usrbinpython-mean/
 3. Download using ``wget`` the [*bsds500*](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html#bsds500) image segmentation database, and decompress it using ``tar`` (keep it in you hard drive, we will come back over this data in a few weeks).
  
 4. What is the disk size of the uncompressed dataset, How many images are in the directory 'BSR/BSDS500/data/images'?
