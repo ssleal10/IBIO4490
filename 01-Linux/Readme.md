@@ -183,18 +183,28 @@ Source: https://www.computerhope.com/unix/ugrep.htm
 the line "#!/bin/python" specifies the type of executable that the file is so, in this case, it can be open as a python executable.
 Source: https://martin-thoma.com/what-does-usrbinpython-mean/
 3. Download using ``wget`` the [*bsds500*](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html#bsds500) image segmentation database, and decompress it using ``tar`` (keep it in you hard drive, we will come back over this data in a few weeks).
- 
+![](https://i.imgur.com/BNIS62C.png)
+![](https://i.imgur.com/5jzWpQO.png)
 4. What is the disk size of the uncompressed dataset, How many images are in the directory 'BSR/BSDS500/data/images'?
 The disk size of the uncompressed dataset is 69.105MB. There are 201 test images, 201 train images and 101 val images. 
 5. What are all the different resolutions? What is their format? Tip: use ``awk``, ``sort``, ``uniq`` 
 Using the command "file*"; In train,test and val some of the images have a resolution of 481x321 and others a resolution of 321x481.
 All of the images are in JPEG format. This can also be done using the command "identify*"  with the imagemagick package installed.
+![](https://i.imgur.com/JDtLlh4.png)
 Source: https://www.computerhope.com/unix/ufile.htm
 6. How many of them are in *landscape* orientation (opposed to *portrait*)? Tip: use ``awk`` and ``cut``
-![](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/NewTux.svg/300px-NewTux.svg.png)
+In the test folder there are 66 portrait oriented and 134 landscape oriented images.
+In the train folder there are 63 portrait oriented and 137 landscape oriented images.
+In the val folder there are 23 portrait oriented and 77 landscape oriented images.
+![](https://i.imgur.com/8dNi6er.png)
+![](https://i.imgur.com/xA8PKt4.png)
+Source: https://elbauldelprogramador.com/como-ordenar-imagenes-por-resolucion/ and https://stackoverflow.com/questions/1555509/can-imagemagick-return-the-image-size
 7. Crop all images to make them square (256x256) and save them in a different folder. Tip: do not forget about  [imagemagick](http://www.imagemagick.org/script/index.php).
-
-
+![](https://i.imgur.com/MmzLzjs.png)
+![](https://i.imgur.com/1iVqry3.png)
+![](https://i.imgur.com/xjmoRwl.png)
+![](https://i.imgur.com/WGXSZFA.png)
+Source:https://fperles.com/imagemagick-cambiar-tamano-formato-fotos-lote-convert/ and https://rootear.com/ubuntu-linux/imagemagick-linux
 # Report
 
 For every question write a detailed description of all the commands/scripts you used to complete them. DO NOT use a graphical interface to complete any of the tasks. Use screenshots to support your findings if you want to. 
