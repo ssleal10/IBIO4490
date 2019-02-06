@@ -186,7 +186,7 @@ Source: https://martin-thoma.com/what-does-usrbinpython-mean/
 ![](https://i.imgur.com/BNIS62C.png)
 ![](https://i.imgur.com/5jzWpQO.png)
 4. What is the disk size of the uncompressed dataset, How many images are in the directory 'BSR/BSDS500/data/images'?
-The disk size of the uncompressed dataset is 69.105MB. There are 201 test images, 201 train images and 101 val images. 
+The disk size of the uncompressed dataset is 69.105MB. There are 200 test images, 200 train images and 100 val images. 
 5. What are all the different resolutions? What is their format? Tip: use ``awk``, ``sort``, ``uniq`` 
 Using the command "file*"; In train,test and val some of the images have a resolution of 481x321 and others a resolution of 321x481.
 All of the images are in JPEG format. This can also be done using the command "identify*"  with the imagemagick package installed.
