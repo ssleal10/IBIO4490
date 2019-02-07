@@ -224,7 +224,7 @@ Source: https://elbauldelprogramador.com/como-ordenar-imagenes-por-resolucion/ &
 7. Crop all images to make them square (256x256) and save them in a different folder. Tip: do not forget about  [imagemagick](http://www.imagemagick.org/script/index.php).
 
 This process was done executing the script ./resize.txt. This script creates a folder called "resized" in the current directory and reads every imagen in the folder using a "for" command.
-Then, every image is strictly converted(using !) to the size 256x256 and the is saved into the "resized" folder. THe conversion was done with a -quality of 100.
+Then, every image is strictly converted(using !) to the size 256x256 and the is saved into the "resized" folder. The conversion was done with a -quality of 100.
  
 ![](https://i.imgur.com/MmzLzjs.png)
 
