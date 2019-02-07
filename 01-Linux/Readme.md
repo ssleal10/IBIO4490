@@ -175,36 +175,63 @@ See [here](ssh.md) for different types of SSH connection with respect to your OS
 ## Your turn
 
 1. What is the ``grep``command?
+
 The "grep" command allows to identify text patterns in a specified file. Also, "grep" can search over subdirectories and through 
 several files.In addition "grep" can search for patterns in more complex structures e.g. looking for "dog", "grep" can identify 
 "god","odg","gdo" and so on. For this, it can be specified the type of file in which "grep" must do the search, e.g. " .txt or .html".
+
 Source: https://www.computerhope.com/unix/ugrep.htm
+
 2. What is the meaning of ``#!/bin/python`` at the start of scripts?
 the line "#!/bin/python" specifies the type of executable that the file is so, in this case, it can be open as a python executable.
+
 Source: https://martin-thoma.com/what-does-usrbinpython-mean/
+
 3. Download using ``wget`` the [*bsds500*](https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/grouping/resources.html#bsds500) image segmentation database, and decompress it using ``tar`` (keep it in you hard drive, we will come back over this data in a few weeks).
+
+In the following images the process to download and decompress the file is shown:
+
 ![](https://i.imgur.com/BNIS62C.png)
 ![](https://i.imgur.com/5jzWpQO.png)
+
 4. What is the disk size of the uncompressed dataset, How many images are in the directory 'BSR/BSDS500/data/images'?
+
 The disk size of the uncompressed dataset is 69.105MB. There are 200 test images, 200 train images and 100 val images. 
+
 5. What are all the different resolutions? What is their format? Tip: use ``awk``, ``sort``, ``uniq`` 
+
 Using the command "file*"; In train,test and val some of the images have a resolution of 481x321 and others a resolution of 321x481.
 All of the images are in JPEG format. This can also be done using the command "identify*"  with the imagemagick package installed.
+
 ![](https://i.imgur.com/JDtLlh4.png)
+
 Source: https://www.computerhope.com/unix/ufile.htm
+
 6. How many of them are in *landscape* orientation (opposed to *portrait*)? Tip: use ``awk`` and ``cut``
+
 In the test folder there are 66 portrait oriented and 134 landscape oriented images.
 In the train folder there are 63 portrait oriented and 137 landscape oriented images.
 In the val folder there are 23 portrait oriented and 77 landscape oriented images.
+This was done using a script and run it from the format ./scriptcont.txt in every folder. What the script does is to read every .jpg image in the actual folder and determine it is resolution as "321481" or "481321" which will determine if it is portrait or landscape oriented this was done using a loop recursivity "for" and the conditional "if" with the "-eq" comparative command.
+Then a variable cont will be used to stored the number of images identified with that orientation. The value of that variable will be shown with "echo".
+
 ![](https://i.imgur.com/8dNi6er.png)
 ![](https://i.imgur.com/xA8PKt4.png)
+
 Source: https://elbauldelprogramador.com/como-ordenar-imagenes-por-resolucion/ and https://stackoverflow.com/questions/1555509/can-imagemagick-return-the-image-size
+
 7. Crop all images to make them square (256x256) and save them in a different folder. Tip: do not forget about  [imagemagick](http://www.imagemagick.org/script/index.php).
+
+This process was done executing the script ./resize.txt. This script creates a folder called "resized" in the current directory and reads every imagen in the folder using a "for" command.
+Then, every image is strictly converted(using !) to the size 256x256 and the is saved into the "resized" folder.
+ 
 ![](https://i.imgur.com/MmzLzjs.png)
 ![](https://i.imgur.com/1iVqry3.png)
 ![](https://i.imgur.com/xjmoRwl.png)
 ![](https://i.imgur.com/WGXSZFA.png)
+
 Source:https://fperles.com/imagemagick-cambiar-tamano-formato-fotos-lote-convert/ and https://rootear.com/ubuntu-linux/imagemagick-linux
+
 # Report
 
 For every question write a detailed description of all the commands/scripts you used to complete them. DO NOT use a graphical interface to complete any of the tasks. Use screenshots to support your findings if you want to. 
