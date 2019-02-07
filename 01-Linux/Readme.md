@@ -214,24 +214,25 @@ In the test folder there are 66 portrait oriented and 134 landscape oriented ima
 In the train folder there are 63 portrait oriented and 137 landscape oriented images.
 In the val folder there are 23 portrait oriented and 77 landscape oriented images.
 This was done using a script and run it from the format ./scriptcont.txt in every folder. What the script does is to read every .jpg image in the actual folder and determine it is resolution as "321481" or "481321" which will determine if it is portrait or landscape oriented this was done using a loop recursivity "for" and the conditional "if" with the "-eq" comparative command.
-Then a variable cont will be used to stored the number of images identified with that orientation. The value of that variable will be shown with "echo".
+Then a variable cont will be used to store the number of images identified with that orientation. The value of that variable will be shown with "echo".
 
 ![](https://i.imgur.com/8dNi6er.png)
 ![](https://i.imgur.com/xA8PKt4.png)
 
-Source: https://elbauldelprogramador.com/como-ordenar-imagenes-por-resolucion/ and https://stackoverflow.com/questions/1555509/can-imagemagick-return-the-image-size
+Source: https://elbauldelprogramador.com/como-ordenar-imagenes-por-resolucion/ & https://stackoverflow.com/questions/1555509/can-imagemagick-return-the-image-size
 
 7. Crop all images to make them square (256x256) and save them in a different folder. Tip: do not forget about  [imagemagick](http://www.imagemagick.org/script/index.php).
 
 This process was done executing the script ./resize.txt. This script creates a folder called "resized" in the current directory and reads every imagen in the folder using a "for" command.
-Then, every image is strictly converted(using !) to the size 256x256 and the is saved into the "resized" folder.
+Then, every image is strictly converted(using !) to the size 256x256 and the is saved into the "resized" folder. THe conversion was done with a -quality of 100.
  
 ![](https://i.imgur.com/MmzLzjs.png)
+
 ![](https://i.imgur.com/1iVqry3.png)
 ![](https://i.imgur.com/xjmoRwl.png)
 ![](https://i.imgur.com/WGXSZFA.png)
 
-Source:https://fperles.com/imagemagick-cambiar-tamano-formato-fotos-lote-convert/ and https://rootear.com/ubuntu-linux/imagemagick-linux
+Source:https://fperles.com/imagemagick-cambiar-tamano-formato-fotos-lote-convert/ & https://rootear.com/ubuntu-linux/imagemagick-linux
 
 # Report
 
