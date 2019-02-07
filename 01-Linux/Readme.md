@@ -183,6 +183,7 @@ several files.In addition "grep" can search for patterns in more complex structu
 Source: https://www.computerhope.com/unix/ugrep.htm
 
 2. What is the meaning of ``#!/bin/python`` at the start of scripts?
+
 the line "#!/bin/python" specifies the type of executable that the file is so, in this case, it can be open as a python executable.
 
 Source: https://martin-thoma.com/what-does-usrbinpython-mean/
