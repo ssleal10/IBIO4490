@@ -34,9 +34,9 @@ if os.path.exists(cwd +'\DataBase') == False:
 
 #Choose randomly an specific number (Let's say N, N>6) of those images.
 import random as ar
-randNum = ar.randint(6,50)
+randNum = ar.randint(6,25)
 print('# images: ' + str(randNum))
-        
+
 #get the labels
 import xlrd
 file_location = cwd +'\DataBase'+'\labels.xlsx'
@@ -45,11 +45,18 @@ sheet = workbook.sheet_by_name('flower_labels')
 x = []    
 for rownum in range(sheet.nrows):
     x.append(sheet.cell(rownum, 1))  
-labels = [0]*210
+n = 210
+m = 2
+labels = [[0] * m for i in range(n)]
 largo = int(len(x))
 for i in range(1,largo):
-    #print(i)
-    labels[i-1] = int(x[i].value)
+    labels[i-1][1] = int(x[i].value)
+y = []    
+for rownum in range(sheet.nrows):
+    y.append(sheet.cell(rownum, 0))  
+largo = int(len(x))
+for i in range(1,largo):
+    labels[i-1][0] = (y[i].value)    
 
 #Resize them to 256x256,writes their label and saves them in a new folder.
 import glob
@@ -60,37 +67,46 @@ files = glob.glob(data_path)
 cont = 0
 if os.path.exists(cwd+'\DataBase'+'\Data_resize') == False:
     os.mkdir(cwd+'\DataBase'+'\Data_resize')
-for imagenI in files:
-    if cont < randNum:
-        namel = os.path.basename(os.path.normpath(imagenI))
-        img = Image.open(str(imagenI))
-        new_img = img.resize((256,256))
-        draw = ImageDraw.Draw(new_img)
-        fuente = ImageFont.truetype('arial.ttf',180)
-        reDraw = draw.text((83,33),str(labels[cont]),fill="blue",font=fuente)
-        new_img.save(cwd+'\DataBase'+'\Data_resize'+'/'+namel,'png')
-        cont = cont +1
-    
+while cont <randNum:
+    random_filename = ar.choice([
+    x for x in os.listdir(img_dir)
+    if os.path.isfile(os.path.join(img_dir, x)) and
+    x.endswith('.png')
+    ]) 
+    if os.path.exists(cwd+'\DataBase'+'\Data_resize'+'/'+random_filename) == False:
+        namel = random_filename
+        print(namel)
+        for i in range(50):  
+            if namel == labels[i][0]:
+                img = Image.open(img_dir +'/'+ str(random_filename))           
+                new_img = img.resize((256,256))
+                draw = ImageDraw.Draw(new_img)
+                fuente = ImageFont.truetype('arial.ttf',180)
+                reDraw = draw.text((83,33),str(labels[i][1]),fill="blue",font=fuente)
+                new_img.save(cwd+'\DataBase'+'\Data_resize'+'/'+namel,'png')
+                cont = cont +1
+
 #subplot from left to right
 import matplotlib.pyplot as plt
 import math
 currentFolder = img_dir+'/'+'Data_resize'
 plt.figure(figsize=(10,10))
 print('wait...')
-for i, file in enumerate(os.listdir(currentFolder)[0:randNum+1]):
+for k, file in enumerate(os.listdir(currentFolder)[0:randNum+1]):
     fullpath = currentFolder+ "/" + file
     img = Image.open(fullpath)
-    plt.subplot(math.ceil(randNum/4),math.ceil(randNum/int(randNum/4)),i+1)
+    plt.subplot(math.ceil(randNum/4),math.ceil(randNum/(randNum/4)),k+1)
     #plt.title(str(i)+'.jpg')
     plt.imshow(img)
     plt.savefig(currentFolder+'/'+'figure.png')
 figura = Image.open(currentFolder+'/'+'figure.png')
 figura.show()
+print( 'the labels are:' + str(labels[0:50]))
 
 #Delete the folder previously created.
 import shutil
 shutil.rmtree(cwd+'\DataBase'+'\Data_resize')
-
+print( 'Folder deleted.')
 #Time ends
 end = time. time()
 print('Total time: '+str(end - start))
@@ -103,3 +119,4 @@ print('Total time: '+str(end - start))
 #https://stackoverflow.com/questions/3451111/unzipping-files-in-python
 #https://stackoverflow.com/questions/1413540/showing-an-image-from-console-in-python/1413567
 #http://www.xavierdupre.fr/blog/2015-01-20_nojs.html
+#https://www.reddit.com/r/Python/comments/7x7x5n/open_random_picture_file_in_folder/
