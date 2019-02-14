@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
 """
 Created on Mon Feb 11 21:18:35 2019
 @author: Sergio Leal - 201622603
@@ -23,6 +23,7 @@ if os.path.exists(cwd +'\DataBase') == False:
     with open(cwd+'/'+'DataBase.zip','wb') as f :
         f.write(data)
     print('Database downloaded.')
+    f.close()
     
     #Unzip
     print('Unzipping the database...')
@@ -33,7 +34,7 @@ if os.path.exists(cwd +'\DataBase') == False:
 
 #Choose randomly an specific number (Let's say N, N>6) of those images.
 import random as ar
-randNum = ar.randint(6,25)
+randNum = ar.randint(6,50)
 print('# images: ' + str(randNum))
         
 #get the labels
@@ -65,8 +66,8 @@ for imagenI in files:
         img = Image.open(str(imagenI))
         new_img = img.resize((256,256))
         draw = ImageDraw.Draw(new_img)
-        fuente = ImageFont.truetype('arial.ttf',80)
-        reDraw = draw.text((103,83),str(labels[cont]),fill="black",font=fuente)
+        fuente = ImageFont.truetype('arial.ttf',180)
+        reDraw = draw.text((83,33),str(labels[cont]),fill="blue",font=fuente)
         new_img.save(cwd+'\DataBase'+'\Data_resize'+'/'+namel,'png')
         cont = cont +1
     
@@ -74,7 +75,7 @@ for imagenI in files:
 import matplotlib.pyplot as plt
 import math
 currentFolder = img_dir+'/'+'Data_resize'
-plt.figure()
+plt.figure(figsize=(10,10))
 print('wait...')
 for i, file in enumerate(os.listdir(currentFolder)[0:randNum+1]):
     fullpath = currentFolder+ "/" + file
