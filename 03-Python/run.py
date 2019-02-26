@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Created on Mon Feb 11 21:18:35 2019
 @author: Sergio Leal - 201622603
