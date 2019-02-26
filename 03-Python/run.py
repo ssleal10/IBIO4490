@@ -39,7 +39,7 @@ print('# images: ' + str(randNum))
 
 #get the labels
 import xlrd
-file_location = cwd +'\'+'DataBase'+'\'+'labels.xlsx'
+file_location = cwd +'/'+'DataBase'+'/'+'labels.xlsx'
 workbook = xlrd.open_workbook(file_location)
 sheet = workbook.sheet_by_name('flower_labels')
 x = []    
@@ -61,19 +61,19 @@ for i in range(1,largo):
 #Resize them to 256x256,writes their label and saves them in a new folder.
 import glob
 from PIL import Image,ImageDraw, ImageFont
-img_dir = cwd+'\'+'DataBase' 
+img_dir = cwd+'/'+'DataBase' 
 data_path = os.path.join(img_dir,'*g')
 files = glob.glob(data_path)
 cont = 0
-if os.path.exists(cwd+'\'+'DataBase'+'\'+'Data_resize') == False:
-    os.mkdir(cwd+'\'+'DataBase'+'\'+'Data_resize')
+if os.path.exists(cwd+'/'+'DataBase'+'/'+'Data_resize') == False:
+    os.mkdir(cwd+'/'+'DataBase'+'/'+'Data_resize')
 while cont <randNum:
     random_filename = ar.choice([
     x for x in os.listdir(img_dir)
     if os.path.isfile(os.path.join(img_dir, x)) and
     x.endswith('.png')
     ]) 
-    if os.path.exists(cwd+'\'+'DataBase'+'\'+'Data_resize'+'/'+random_filename) == False:
+    if os.path.exists(cwd+'/'+'DataBase'+'/'+'Data_resize'+'/'+random_filename) == False:
         namel = random_filename
         print(namel)
         for i in range(50):  
@@ -83,7 +83,7 @@ while cont <randNum:
                 draw = ImageDraw.Draw(new_img)
                 fuente = ImageFont.truetype('arial.ttf',180)
                 reDraw = draw.text((83,33),str(labels[i][1]),fill="blue",font=fuente)
-                new_img.save(cwd+'\DataBase'+'\Data_resize'+'/'+namel,'png')
+                new_img.save(cwd+'/'+'DataBase'+'/'+'Data_resize'+'/'+namel,'png')
                 cont = cont +1
 
 #subplot from left to right
