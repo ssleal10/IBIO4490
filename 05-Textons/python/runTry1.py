@@ -253,7 +253,7 @@ import sys
 num = 1
 while num <= limite:
     #k = 16*2
-    k = 16*num
+    k = 32*num
     sys.path.append('python')
     
     #Create a filter bank with deafult params
