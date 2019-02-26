@@ -326,39 +326,40 @@ while num <= limite:
     
         print(cm)
     
-        plt.imshow(cm, interpolation='nearest', cmap=cmap)
-        plt.title(title)
-        plt.colorbar()
-        tick_marks = np.arange(len(classes))
-        plt.xticks(tick_marks, classes, rotation=45)
-        plt.yticks(tick_marks, classes)
+        #plt.imshow(cm, interpolation='nearest', cmap=cmap)
+        #plt.title(title)
+        #plt.colorbar()
+        
+        #tick_marks = np.arange(len(classes))
+        #plt.xticks(tick_marks, classes, rotation=45)
+        #plt.yticks(tick_marks, classes)
     
-        fmt = '.2f' if normalize else 'd'
-        thresh = cm.max() / 2.
-        for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-            plt.text(j, i, format(cm[i, j], fmt),
-                     horizontalalignment="center",
-                     color="white" if cm[i, j] > thresh else "black")
+       # fmt = '.2f' if normalize else 'd'
+        #thresh = cm.max() / 2.
+        #for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+            #plt.text(j, i, format(cm[i, j], fmt),
+                    # horizontalalignment="center",
+                     #color="white" if cm[i, j] > thresh else "black")
     
-        plt.ylabel('True label')
-        plt.xlabel('Predicted label')
-        plt.tight_layout()
+        #plt.ylabel('True label')
+        #plt.xlabel('Predicted label')
+        #plt.tight_layout()
         
     confusionmat_KNN = confusion_matrix(LabelsBalanced,prediction_KNN)
     confusionmat_TREE = confusion_matrix(LabelsBalanced,prediction_TREE)
     np.set_printoptions(precision=2)
     
     # Plot non-normalized confusion matrix
-    plt.figure()
-    plot_confusion_matrix(confusionmat_KNN, class_names, normalize =True,
-                          title='Normalized confusion matrix - KNN')
+    #plt.figure()
+    #plot_confusion_matrix(confusionmat_KNN, class_names, normalize =True,
+                          #title='Normalized confusion matrix - KNN')
     
     # Plot normalized confusion matrix
-    plt.figure()
-    plot_confusion_matrix(confusionmat_TREE, class_names, normalize=True,
-                          title='Normalized confusion matrix - RandomForest')
+    #plt.figure()
+    #plot_confusion_matrix(confusionmat_TREE, class_names, normalize=True,
+                          #title='Normalized confusion matrix - RandomForest')
     
-    plt.show()
+    #plt.show()
     print('Con un k de:'+str(k))
     print('El ACA de KNN es de: '+ str(ACA_KNN))
     print('El ACA de RandomForest es de: '+ str(ACA_TREE))
