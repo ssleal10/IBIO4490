@@ -4,6 +4,27 @@ Created on Sun Feb 24 19:53:05 2019
 
 @author: Sergio
 """
+#descarga la database
+import os
+import urllib.request
+import tarfile
+
+#Download the dataset CIFAR-10
+cwd = os.getcwd()
+if os.path.exists(cwd +'/'+'cifar-10-python.tar.gz') == False:
+    url = "https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"
+    print('Downloading the database...')
+    u = urllib.request.urlopen(url)
+    data = u.read()
+    u.close()
+    with open(cwd+'/'+'cifar-10-python.tar.gz','wb') as f :
+        f.write(data)
+    print('Database downloaded.')
+    f.close()
+#Extract files
+tar = tarfile.open("cifar-10-python.tar.gz")
+tar.extractall()
+tar.close()
 ## cargar la imágenes de cifar:
 def unpickle(file):
     import pickle
