@@ -16,7 +16,7 @@ if os.path.exists(cwd +'\DataBase') == False:
     url = "https://www.dropbox.com/s/rsk15byktb2zl5g/DataBase.zip?dl=1"
     import zipfile
     print('Downloading the database...')
-    import urllib.request
+    import urllib
     u = urllib.request.urlopen(url)
     data = u.read()
     u.close()
