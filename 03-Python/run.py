@@ -12,7 +12,7 @@ cwd = os.getcwd()
 
 #Download (and untar if the case) your dataset. Here you can be very creative 
 #i.e., you may use Dropbox, Drive, or anything you can access from a python module.
-if os.path.exists(cwd +'\DataBase') == False:
+if os.path.exists(cwd +'/'+'DataBase') == False:
     url = "https://www.dropbox.com/s/rsk15byktb2zl5g/DataBase.zip?dl=1"
     import zipfile
     print('Downloading the database...')
@@ -105,7 +105,7 @@ print( 'the labels are:' + str(labels[0:50]))
 
 #Delete the folder previously created.
 import shutil
-shutil.rmtree(cwd+'\DataBase'+'\Data_resize')
+shutil.rmtree(cwd+'/'+'DataBase'+'/'+'Data_resize')
 print( 'Folder deleted.')
 #Time ends
 end = time. time()
