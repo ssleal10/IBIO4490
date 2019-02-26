@@ -27,7 +27,7 @@ if os.path.exists(cwd +'\DataBase') == False:
     
     #Unzip
     print('Unzipping the database...')
-    zip_Archivo = zipfile.ZipFile(cwd +'\DataBase.zip', 'r')
+    zip_Archivo = zipfile.ZipFile(cwd +'DataBase.zip', 'r')
     zip_Archivo.extractall(cwd)
     zip_Archivo.close()
     print('Unzipping done.')        
