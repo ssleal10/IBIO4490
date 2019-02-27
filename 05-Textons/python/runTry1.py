@@ -244,7 +244,7 @@ LabelsBalanced = np.concatenate((np.zeros((a)),np.zeros((a))+1,np.zeros((a))+2,
                                  np.zeros((a))+3,np.zeros((a))+4,np.zeros((a))+5,
                                  np.zeros((a))+6,np.zeros((a))+7,np.zeros((a))+8,
                                  np.zeros((a))+9))
-limite = 20
+limite = 5
 Array_ACA_KNN=np.zeros(limite, dtype=float)
 Array_ACA_TREE=np.zeros(limite, dtype=float)
 arrayK=np.zeros(limite, dtype=float)
@@ -253,7 +253,7 @@ import sys
 num = 1
 while num <= limite:
     #k = 16*2
-    k = 32*num
+    k = 16*num
     sys.path.append('python')
     
     #Create a filter bank with deafult params
@@ -292,11 +292,11 @@ while num <= limite:
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.ensemble import RandomForestClassifier
     
-    modelo_KNN = KNeighborsClassifier(n_neighbors=50)
+    modelo_KNN = KNeighborsClassifier(n_neighbors=100)
     modelo_KNN.fit(histogramas, LabelsBalanced)
     prediction_KNN = modelo_KNN.predict(histogramas)
     
-    modelo_TREE = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=0)
+    modelo_TREE = RandomForestClassifier(n_estimators=100, max_depth=50, random_state=0)
     modelo_TREE.fit(histogramas,LabelsBalanced)
     prediction_TREE = modelo_TREE.predict(histogramas)
     
