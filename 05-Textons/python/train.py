@@ -393,24 +393,24 @@ while num_a <= limite_a:
     arrayK[num_a-1] = 10*num_a
     num_a = num_a +1
     
-import matplotlib.pyplot as plt
-plt.figure()
-plt.plot(arrayK,Array_ACA_KNN)
-plt.savefig('IMGS_KNN.png')
-plt.title('imágenes vs ACA- Modelo KNN',fontdict=None, loc='center')
-plt.xlabel('nùmero de imágenes')
-plt.ylabel('ACA')
-plt.show()
-plt.close()
+#import matplotlib.pyplot as plt
+#plt.figure()
+#plt.plot(arrayK,Array_ACA_KNN)
+#plt.savefig('IMGS_KNN.png')
+#plt.title('imágenes vs ACA- Modelo KNN',fontdict=None, loc='center')
+#plt.xlabel('nùmero de imágenes')
+#plt.ylabel('ACA')
+#plt.show()
+#plt.close()
 
-plt.figure()
-plt.plot(arrayK,Array_ACA_TREE)
-plt.savefig('IMGS_TREE.png')
-plt.title('número de imágenes vs ACA- Modelo RandomForest',fontdict=None, loc='center')
-plt.xlabel('número de imágenes')
-plt.ylabel('ACA')
-plt.show()
-plt.close()
+#plt.figure()
+#plt.plot(arrayK,Array_ACA_TREE)
+#plt.savefig('IMGS_TREE.png')
+#plt.title('número de imágenes vs ACA- Modelo RandomForest',fontdict=None, loc='center')
+#plt.xlabel('número de imágenes')
+#plt.ylabel('ACA')
+#plt.show()
+#plt.close()
 
 
 # para cargar despues
