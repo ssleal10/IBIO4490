@@ -151,8 +151,8 @@ data_test,labels_test=get_data(load_cifar10_test())
 
 BigData = np.concatenate((data_1,data_2))
 BigLabels = np.concatenate((labels_1,labels_2))
-limite_a = 5
-num_a = 5
+limite_a = 1
+num_a = 1
 b=20
 while num_a <= limite_a:
     a=b*num_a
@@ -261,7 +261,7 @@ while num_a <= limite_a:
     import sys
     #num = 1
     #while num <= limite:
-    k = 16*8
+    k = 16*2
     #k = 16*num
     sys.path.append('python')
     
@@ -305,7 +305,7 @@ while num_a <= limite_a:
     modelo_KNN.fit(histogramas, LabelsBalanced)
     prediction_KNN = modelo_KNN.predict(histogramas)
     
-    modelo_TREE = RandomForestClassifier(n_estimators=100, max_depth=None, random_state=0)
+    modelo_TREE = RandomForestClassifier(n_estimators=100, max_depth=7, random_state=0)
     modelo_TREE.fit(histogramas,LabelsBalanced)
     prediction_TREE = modelo_TREE.predict(histogramas)
     
@@ -373,11 +373,11 @@ while num_a <= limite_a:
     
     
     from sklearn.externals import joblib
-    filename = 'model_KNN_FINAL1000_distance.pk1'
+    filename = 'model_KNN.pk1'
     joblib.dump(modelo_KNN, filename)
     
     from sklearn.externals import joblib
-    filename = 'model_RandomForest_FINAL1000_none.pk1'
+    filename = 'model_RandomForest.pk1'
     joblib.dump(modelo_TREE, filename)
     
     #ACA_KNN.append(ACA_KNN)
@@ -411,7 +411,7 @@ while num_a <= limite_a:
 #plt.ylabel('ACA')
 #plt.show()
 #plt.close()
-
+python3 test_final.py
 
 # para cargar despues
 #datosACAKNN = np.load('aca_knn.npy')
