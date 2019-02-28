@@ -244,7 +244,7 @@ LabelsBalanced = np.concatenate((np.zeros((a)),np.zeros((a))+1,np.zeros((a))+2,
                                  np.zeros((a))+3,np.zeros((a))+4,np.zeros((a))+5,
                                  np.zeros((a))+6,np.zeros((a))+7,np.zeros((a))+8,
                                  np.zeros((a))+9))
-limite = 5
+limite = 10
 Array_ACA_KNN=np.zeros(limite, dtype=float)
 Array_ACA_TREE=np.zeros(limite, dtype=float)
 arrayK=np.zeros(limite, dtype=float)
@@ -253,7 +253,7 @@ import sys
 num = 1
 while num <= limite:
     #k = 16*2
-    k = 96 + (16*num)
+    k = (32*num)
     sys.path.append('python')
     
     #Create a filter bank with deafult params
