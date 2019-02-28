@@ -125,8 +125,8 @@ data_test,labels_test=get_data(load_cifar10_test())
 #prueba = np.zeros((1000,32,32))
 #prueba[0] = data_1[1][:][:]
 
-#data_test = data_test[0:1000,:,:]
-#labels_test = labels_test[0:1000]
+data_test = data_test[0:1000,:,:]
+labels_test = labels_test[0:1000]
 #solo por probar:
 
 import sys
@@ -173,10 +173,10 @@ modelo_KNN = joblib.load("model_KNN_FINAL1000.pk1")
 
 
 
-modelo_TREE.fit(histogramas, labels_test)
+#modelo_TREE.fit(histogramas, labels_test)
 prediction_TREE = modelo_TREE.predict(histogramas)
 
-modelo_KNN.fit(histogramas, labels_test)
+#modelo_KNN.fit(histogramas, labels_test)
 prediction_KNN = modelo_KNN.predict(histogramas)
 
 
