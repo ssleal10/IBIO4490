@@ -125,8 +125,8 @@ data_test,labels_test=get_data(load_cifar10_test())
 #prueba = np.zeros((1000,32,32))
 #prueba[0] = data_1[1][:][:]
 
-data_test = data_test[0:50,:,:]
-labels_test = labels_test[0:50]
+data_test = data_test[0:5,:,:]
+labels_test = labels_test[0:5]
 #solo por probar:
 
 import sys
@@ -183,6 +183,7 @@ prediction_KNN = modelo_KNN.predict(histogramas)
 from sklearn.metrics import accuracy_score
 ACA_TREE = accuracy_score(prediction_TREE,labels_test)
 ACA_KNN = accuracy_score(prediction_KNN,labels_test)
+
 class_names = np.arange(0,10)
 
 import itertools
@@ -191,10 +192,7 @@ def plot_confusion_matrix(cm, classes,
                           normalize=False,
                           title='Confusion matrix',
                           cmap=plt.cm.Blues):
-  #  """
-  #  This function prints and plots the confusion matrix.
-  #  Normalization can be applied by setting `normalize=True`.
-  #  """
+
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print("Normalized confusion matrix")
@@ -220,20 +218,21 @@ def plot_confusion_matrix(cm, classes,
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.tight_layout()
-    
-confusionmat_TREE = confusion_matrix(labels_test,prediction_TREE)
-confusionmat_KNN = confusion_matrix(labels_test,prediction_KNN)
+
+confusionmat_KNN = confusion_matrix(LabelsBalanced,prediction_KNN)
+confusionmat_TREE = confusion_matrix(LabelsBalanced,prediction_TREE)
 np.set_printoptions(precision=2)
+
+# Plot non-normalized confusion matrix
+plt.figure()
+plot_confusion_matrix(confusionmat_KNN, class_names, normalize =True,
+                      title='Normalized confusion matrix - KNN')
 
 # Plot normalized confusion matrix
 plt.figure()
 plot_confusion_matrix(confusionmat_TREE, class_names, normalize=True,
                       title='Normalized confusion matrix - RandomForest')
-plt.figure()
-plot_confusion_matrix(confusionmat_KNN, class_names, normalize=True,
-                      title='Normalized confusion matrix - KNN')
 
 plt.show()
-print('El ACA de RandomForest es de: '+ str(ACA_TREE))
 print('El ACA de KNN es de: '+ str(ACA_KNN))
-
+print('El ACA de RandomForest es de: '+ str(ACA_TREE))
