@@ -301,10 +301,12 @@ while num_a <= limite_a:
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.feature_selection import chi2
-    distchi = chi2(histogramas, LabelsBalanced)
+    from sklearn.feature_selection import SelectKBest
+    
+    hist_new = SelectKBest(chi2, k=2).fit_transform(histogramas, LabelsBalanced)
     
     modelo_KNN = KNeighborsClassifier(n_neighbors=15)
-    modelo_KNN.fit(distchi, LabelsBalanced)
+    modelo_KNN.fit(hist_new, LabelsBalanced)
    # modelo_KNN.fit(histogramas, LabelsBalanced)
     prediction_KNN = modelo_KNN.predict(histogramas)
     
