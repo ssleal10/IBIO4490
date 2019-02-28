@@ -292,11 +292,11 @@ while num <= limite:
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.ensemble import RandomForestClassifier
     
-    modelo_KNN = KNeighborsClassifier(n_neighbors=5)
+    modelo_KNN = KNeighborsClassifier(n_neighbors=2)
     modelo_KNN.fit(histogramas, LabelsBalanced)
     prediction_KNN = modelo_KNN.predict(histogramas)
     
-    modelo_TREE = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=0)
+    modelo_TREE = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=0)
     modelo_TREE.fit(histogramas,LabelsBalanced)
     prediction_TREE = modelo_TREE.predict(histogramas)
     
@@ -380,7 +380,7 @@ while num <= limite:
     Array_ACA_TREE[num-1] = ACA_TREE
     arrayK[num-1] = k
     num = num +1
-    
+    print(histogramas.shape)
 np.save('aca_knn.npy',Array_ACA_KNN)
 np.save('aca_tree.npy',Array_ACA_TREE)
 np.save('k.npy',arrayK)
