@@ -219,6 +219,11 @@ def plot_confusion_matrix(cm, classes,
     plt.xlabel('Predicted label')
     plt.tight_layout()
 
+plt.show()
+print('El ACA de KNN es de: '+ str(ACA_KNN))
+print('El ACA de RandomForest es de: '+ str(ACA_TREE))
+plt.close() 
+
 confusionmat_KNN = confusion_matrix(labels_test,prediction_KNN)
 confusionmat_TREE = confusion_matrix(labels_test,prediction_TREE)
 np.set_printoptions(precision=2)
@@ -227,13 +232,9 @@ np.set_printoptions(precision=2)
 plt.figure()
 plot_confusion_matrix(confusionmat_KNN, class_names, normalize =True,
                       title='Normalized confusion matrix - KNN')
-
+plt.close()
 # Plot normalized confusion matrix
 plt.figure()
 plot_confusion_matrix(confusionmat_TREE, class_names, normalize=True,
                       title='Normalized confusion matrix - RandomForest')
-
-plt.show()
-print('El ACA de KNN es de: '+ str(ACA_KNN))
-print('El ACA de RandomForest es de: '+ str(ACA_TREE))
 plt.close()
