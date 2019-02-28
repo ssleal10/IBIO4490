@@ -411,7 +411,7 @@ while num_a <= limite_a:
 #plt.ylabel('ACA')
 #plt.show()
 #plt.close()
-python3 test_final.py
+test_final.py
 
 # para cargar despues
 #datosACAKNN = np.load('aca_knn.npy')
