@@ -219,8 +219,8 @@ def plot_confusion_matrix(cm, classes,
     plt.xlabel('Predicted label')
     plt.tight_layout()
 
-confusionmat_KNN = confusion_matrix(LabelsBalanced,prediction_KNN)
-confusionmat_TREE = confusion_matrix(LabelsBalanced,prediction_TREE)
+confusionmat_KNN = confusion_matrix(labels_test,prediction_KNN)
+confusionmat_TREE = confusion_matrix(labels_test,prediction_TREE)
 np.set_printoptions(precision=2)
 
 # Plot non-normalized confusion matrix
