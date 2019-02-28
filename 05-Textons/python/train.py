@@ -370,7 +370,7 @@ while num_a <= limite_a:
     print('Con un número de imágenes de:'+str(num_a))
     print('El ACA de KNN es de: '+ str(ACA_KNN))
     print('El ACA de RandomForest es de: '+ str(ACA_TREE))
-    plot.close()
+    plt.close()
     
     from sklearn.externals import joblib
     filename = 'model_KNN.pk1'
