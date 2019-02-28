@@ -301,7 +301,7 @@ while num_a <= limite_a:
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.ensemble import RandomForestClassifier
     
-    modelo_KNN = KNeighborsClassifier(n_neighbors=2,weights=‘distance’)
+    modelo_KNN = KNeighborsClassifier(n_neighbors=2,weights=distance)
     modelo_KNN.fit(histogramas, LabelsBalanced)
     prediction_KNN = modelo_KNN.predict(histogramas)
     
