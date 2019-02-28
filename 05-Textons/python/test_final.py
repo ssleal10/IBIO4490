@@ -125,8 +125,8 @@ data_test,labels_test=get_data(load_cifar10_test())
 #prueba = np.zeros((1000,32,32))
 #prueba[0] = data_1[1][:][:]
 
-data_test = data_test[0:100,:,:]
-labels_test = labels_test[0:100]
+data_test = data_test[0:1000,:,:]
+labels_test = labels_test[0:1000]
 #solo por probar:
 
 import sys
