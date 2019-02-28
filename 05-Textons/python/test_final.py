@@ -143,7 +143,7 @@ for i in range(0,len(data_test)-1):
 
 filterResponses = fbRun(fb,acum)
 
-k = 16*4
+k = 16*10
 
 from computeTextons import computeTextons
 map, textons = computeTextons(filterResponses, k)
