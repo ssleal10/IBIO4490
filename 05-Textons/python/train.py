@@ -301,11 +301,11 @@ while num_a <= limite_a:
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.ensemble import RandomForestClassifier
     
-    modelo_KNN = KNeighborsClassifier(n_neighbors=2)
+    modelo_KNN = KNeighborsClassifier(n_neighbors=2,weights=‘distance’)
     modelo_KNN.fit(histogramas, LabelsBalanced)
     prediction_KNN = modelo_KNN.predict(histogramas)
     
-    modelo_TREE = RandomForestClassifier(n_estimators=100, max_depth=7, random_state=0)
+    modelo_TREE = RandomForestClassifier(n_estimators=100, max_depth=None, random_state=0)
     modelo_TREE.fit(histogramas,LabelsBalanced)
     prediction_TREE = modelo_TREE.predict(histogramas)
     
@@ -373,11 +373,11 @@ while num_a <= limite_a:
     
     
     from sklearn.externals import joblib
-    filename = 'model_KNN_FINAL1000.pk1'
+    filename = 'model_KNN_FINAL1000_distance.pk1'
     joblib.dump(modelo_KNN, filename)
     
     from sklearn.externals import joblib
-    filename = 'model_RandomForest_FINAL1000.pk1'
+    filename = 'model_RandomForest_FINAL1000_none.pk1'
     joblib.dump(modelo_TREE, filename)
     
     #ACA_KNN.append(ACA_KNN)
