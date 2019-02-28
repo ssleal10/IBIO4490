@@ -125,8 +125,8 @@ data_test,labels_test=get_data(load_cifar10_test())
 #prueba = np.zeros((1000,32,32))
 #prueba[0] = data_1[1][:][:]
 
-#data_test = data_test[0:500,:,:]
-#labels_test = labels_test[0:500]
+data_test = data_test[0:500,:,:]
+labels_test = labels_test[0:500]
 #solo por probar:
 
 import sys
@@ -191,10 +191,10 @@ def plot_confusion_matrix(cm, classes,
                           normalize=False,
                           title='Confusion matrix',
                           cmap=plt.cm.Blues):
-    """
-    This function prints and plots the confusion matrix.
-    Normalization can be applied by setting `normalize=True`.
-    """
+  #  """
+  #  This function prints and plots the confusion matrix.
+  #  Normalization can be applied by setting `normalize=True`.
+  #  """
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print("Normalized confusion matrix")
