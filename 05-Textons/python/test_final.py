@@ -162,7 +162,7 @@ def histc(X, bins):
         r[i-1] += 1
     return np.array(r)
 
-histogramas = numpy.zeros((len(data_test),32), dtype=float)
+histogramas = numpy.zeros((len(data_test),k), dtype=float)
 for i in range(0,len(tmap)):
   # histogramas[i,:,:] = histc(tmap[i,:,:].flatten(), np.arange(k))/tmap[i,:,:].size
     histogramas[i] = histc(tmap[i].flatten(), np.arange(k))/tmap[i].size            
