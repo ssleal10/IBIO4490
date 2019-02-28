@@ -171,7 +171,9 @@ from sklearn.externals import joblib
 modelo_TREE = joblib.load("model_RandomForest.pk1")
 modelo_KNN = joblib.load("model_KNN.pk1")
 
-
+from sklearn.feature_selection import chi2
+from sklearn.feature_selection import SelectKBest
+histogramas = SelectKBest(chi2, k=2).fit_transform(histogramas, LabelsBalanced)
 
 #modelo_TREE.fit(histogramas, labels_test)
 prediction_TREE = modelo_TREE.predict(histogramas)
