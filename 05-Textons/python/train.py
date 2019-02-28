@@ -305,7 +305,7 @@ while num_a <= limite_a:
     
     histogramas = SelectKBest(chi2, k=2).fit_transform(histogramas, LabelsBalanced)
     
-    modelo_KNN = KNeighborsClassifier(n_neighbors=200)
+    modelo_KNN = KNeighborsClassifier(n_neighbors=100,weights = 'distance')
     #modelo_KNN.fit(hist_new, LabelsBalanced)
     modelo_KNN.fit(histogramas, LabelsBalanced)
     prediction_KNN = modelo_KNN.predict(histogramas)
