@@ -261,7 +261,7 @@ while num_a <= limite_a:
     import sys
     #num = 1
     #while num <= limite:
-    k = 16*15
+    k = 16*11
     #k = 16*num
     sys.path.append('python')
     
