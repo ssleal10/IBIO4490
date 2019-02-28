@@ -373,11 +373,11 @@ while num_a <= limite_a:
     
     
     from sklearn.externals import joblib
-    filename = 'model_KNN_FINAL2500.pk1'
+    filename = 'model_KNN_FINAL1000.pk1'
     joblib.dump(modelo_KNN, filename)
     
     from sklearn.externals import joblib
-    filename = 'model_RandomForest_FINAL2500.pk1'
+    filename = 'model_RandomForest_FINAL1000.pk1'
     joblib.dump(modelo_TREE, filename)
     
     #ACA_KNN.append(ACA_KNN)
