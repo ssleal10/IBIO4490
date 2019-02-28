@@ -168,8 +168,8 @@ for i in range(0,len(tmap)):
     histogramas[i] = histc(tmap[i].flatten(), np.arange(k))/tmap[i].size            
    
 from sklearn.externals import joblib
-modelo_TREE = joblib.load("model_RandomForest_FINAL1000.pk1")
-modelo_KNN = joblib.load("model_KNN_FINAL1000.pk1")
+modelo_TREE = joblib.load("model_RandomForest_FINAL1000_none.pk1")
+modelo_KNN = joblib.load("model_KNN_FINAL1000_distance.pk1")
 
 
 
