@@ -151,8 +151,8 @@ data_test,labels_test=get_data(load_cifar10_test())
 
 BigData = np.concatenate((data_1,data_2))
 BigLabels = np.concatenate((labels_1,labels_2))
-limite_a = 10
-num_a = 1
+limite_a = 5
+num_a = 5
 b=50
 while num_a <= limite_a:
     a=b*num_a
@@ -373,11 +373,11 @@ while num_a <= limite_a:
     
     
     from sklearn.externals import joblib
-    filename = 'model_KNN.pk1'
+    filename = 'model_KNN_FINAL.pk1'
     joblib.dump(modelo_KNN, filename)
     
     from sklearn.externals import joblib
-    filename = 'model_RandomForest.pk1'
+    filename = 'model_RandomForest_FINAL.pk1'
     joblib.dump(modelo_TREE, filename)
     
     #ACA_KNN.append(ACA_KNN)
