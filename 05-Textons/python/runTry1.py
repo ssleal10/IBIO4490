@@ -292,7 +292,7 @@ while num <= limite:
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.ensemble import RandomForestClassifier
     
-    modelo_KNN = KNeighborsClassifier(n_neighbors=1)
+    modelo_KNN = KNeighborsClassifier(n_neighbors=2)
     modelo_KNN.fit(histogramas, LabelsBalanced)
     prediction_KNN = modelo_KNN.predict(histogramas)
     
