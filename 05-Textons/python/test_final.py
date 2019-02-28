@@ -125,8 +125,8 @@ data_test,labels_test=get_data(load_cifar10_test())
 #prueba = np.zeros((1000,32,32))
 #prueba[0] = data_1[1][:][:]
 
-data_test = data_test[0:2500,:,:]
-labels_test = labels_test[0:2500]
+data_test = data_test[0:100,:,:]
+labels_test = labels_test[0:100]
 #solo por probar:
 
 import sys
@@ -143,7 +143,7 @@ for i in range(0,len(data_test)-1):
 
 filterResponses = fbRun(fb,acum)
 
-k = 16*8
+k = 16*2
 
 from computeTextons import computeTextons
 map, textons = computeTextons(filterResponses, k)
@@ -168,8 +168,8 @@ for i in range(0,len(tmap)):
     histogramas[i] = histc(tmap[i].flatten(), np.arange(k))/tmap[i].size            
    
 from sklearn.externals import joblib
-modelo_TREE = joblib.load("model_RandomForest_FINAL2500.pk1")
-modelo_KNN = joblib.load("model_KNN_FINAL2500.pk1")
+modelo_TREE = joblib.load("model_RandomForest.pk1")
+modelo_KNN = joblib.load("model_KNN.pk1")
 
 
 
@@ -236,3 +236,4 @@ plot_confusion_matrix(confusionmat_TREE, class_names, normalize=True,
 plt.show()
 print('El ACA de KNN es de: '+ str(ACA_KNN))
 print('El ACA de RandomForest es de: '+ str(ACA_TREE))
+plt.close()
