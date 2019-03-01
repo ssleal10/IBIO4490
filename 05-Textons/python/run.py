@@ -297,7 +297,6 @@ from sklearn.metrics import confusion_matrix
 confusionmat_KNN = confusion_matrix(LabelsBalanced,prediction_KNN)
 confusionmat_TREE = confusion_matrix(LabelsBalanced,prediction_TREE)
 
-print('Con un número de imágenes de:'+str(num_a))
 print('El ACA de KNN es de: '+ str(ACA_KNN))
 print('El ACA de RandomForest es de: '+ str(ACA_TREE))
 plt.close()
