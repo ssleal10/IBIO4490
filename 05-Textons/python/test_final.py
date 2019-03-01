@@ -231,7 +231,7 @@ plot_confusion_matrix(confusionmat_KNN, class_names, normalize =True,
                       title='Normalized confusion matrix - KNN')
 #    
 # Plot normalized confusion matrix
-plt.figure()
+#plt.figure()
 plot_confusion_matrix(confusionmat_TREE, class_names, normalize=True,
                       title='Normalized confusion matrix - RandomForest')
 #    
