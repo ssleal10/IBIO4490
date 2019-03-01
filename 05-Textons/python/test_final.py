@@ -125,8 +125,8 @@ data_test,labels_test=get_data(load_cifar10_test())
 #prueba = np.zeros((1000,32,32))
 #prueba[0] = data_1[1][:][:]
 
-data_test = data_test[0:10,:,:]
-labels_test = labels_test[0:10]
+data_test = data_test[0:20,:,:]
+labels_test = labels_test[0:20]
 #solo por probar:
 
 import sys
@@ -229,12 +229,13 @@ confusionmat_TREE = confusion_matrix(labels_test,prediction_TREE)
 plt.figure()
 plot_confusion_matrix(confusionmat_KNN, class_names, normalize =True,
                       title='Normalized confusion matrix - KNN')
-#    
+plt.close()
 # Plot normalized confusion matrix
-#plt.figure()
+plt.figure()
 plot_confusion_matrix(confusionmat_TREE, class_names, normalize=True,
                       title='Normalized confusion matrix - RandomForest')
-#    
+plt.close()  
+
 plt.show()
 print('El ACA de KNN es de: '+ str(ACA_KNN))
 print('El ACA de RandomForest es de: '+ str(ACA_TREE))
