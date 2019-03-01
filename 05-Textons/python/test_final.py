@@ -223,7 +223,7 @@ def plot_confusion_matrix(cm, classes,
     
 confusionmat_KNN = confusion_matrix(labels_test,prediction_KNN)
 confusionmat_TREE = confusion_matrix(labels_test,prediction_TREE)
-+np.set_printoptions(precision=2)
+#np.set_printoptions(precision=2)
 #    
 # Plot non-normalized confusion matrix
 plt.figure()
