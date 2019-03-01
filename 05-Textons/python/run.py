@@ -1,10 +1,9 @@
 #!/usr/bin/python
 """
 Created on Sun Feb 24 19:53:05 2019
-
-@author: Sergio
+@author: Sergio y Mateo
 """
-#descarga la database
+#download the database
 import os
 import urllib.request
 import tarfile
@@ -25,7 +24,7 @@ if os.path.exists(cwd +'/'+'cifar-10-python.tar.gz') == False:
 tar = tarfile.open("cifar-10-python.tar.gz")
 tar.extractall()
 tar.close()
-## cargar la imágenes de cifar:
+#Load CIFAR-10:
 def unpickle(file):
     import pickle
     import numpy as np
@@ -54,7 +53,7 @@ def merge_dict(dict1, dict2):
         if key=='data':
             new_dict[key] = np.vstack((value[0], value[1]))
         if key=='labels':
-            new_dict[key] = np.hstack((value[0], value[1]))            
+            new_dict[key] = np.hstack((value[0], value[1]))
         elif key=='batch_label':
             new_dict[key] = value[1]
         else:
@@ -62,15 +61,13 @@ def merge_dict(dict1, dict2):
     return new_dict
 
 
-#import ipdb
-#ipdb.set_trace()
 def load_cifar10_1(meta='cifar-10-batches-py', mode=1):
     assert mode in [1, 2, 3, 4, 5, 'test']
     _dict = {}
     import os
     if isinstance(mode, int):
         for i in range(mode):
-            file_ = os.path.join(meta, 'data_batch_'+str(mode))           
+            file_ = os.path.join(meta, 'data_batch_'+str(mode))
             _dict = merge_dict(_dict, unpickle(file_))
     else:
         file_ = os.path.join(meta, 'test_batch')
@@ -82,7 +79,7 @@ def load_cifar10_2(meta='cifar-10-batches-py', mode=2):
     import os
     if isinstance(mode, int):
         for i in range(mode):
-            file_ = os.path.join(meta, 'data_batch_'+str(mode))           
+            file_ = os.path.join(meta, 'data_batch_'+str(mode))
             _dict = merge_dict(_dict, unpickle(file_))
     else:
         file_ = os.path.join(meta, 'test_batch')
@@ -94,7 +91,7 @@ def load_cifar10_3(meta='cifar-10-batches-py', mode=3):
     import os
     if isinstance(mode, int):
         for i in range(mode):
-            file_ = os.path.join(meta, 'data_batch_'+str(mode))           
+            file_ = os.path.join(meta, 'data_batch_'+str(mode))
             _dict = merge_dict(_dict, unpickle(file_))
     else:
         file_ = os.path.join(meta, 'test_batch')
@@ -106,7 +103,7 @@ def load_cifar10_4(meta='cifar-10-batches-py', mode=4):
     import os
     if isinstance(mode, int):
         for i in range(mode):
-            file_ = os.path.join(meta, 'data_batch_'+str(mode))           
+            file_ = os.path.join(meta, 'data_batch_'+str(mode))
             _dict = merge_dict(_dict, unpickle(file_))
     else:
         file_ = os.path.join(meta, 'test_batch')
@@ -118,7 +115,7 @@ def load_cifar10_5(meta='cifar-10-batches-py', mode=5):
     import os
     if isinstance(mode, int):
         for i in range(mode):
-            file_ = os.path.join(meta, 'data_batch_'+str(mode))           
+            file_ = os.path.join(meta, 'data_batch_'+str(mode))
             _dict = merge_dict(_dict, unpickle(file_))
     else:
         file_ = os.path.join(meta, 'test_batch')
@@ -130,128 +127,117 @@ def load_cifar10_test(meta='cifar-10-batches-py', mode='test'):
     import os
     if isinstance(mode, int):
         for i in range(mode):
-            file_ = os.path.join(meta, 'data_batch_'+str(mode))           
+            file_ = os.path.join(meta, 'data_batch_'+str(mode))
             _dict = merge_dict(_dict, unpickle(file_))
     else:
         file_ = os.path.join(meta, 'test_batch')
         _dict = unpickle(file_)
     return _dict
-####################################################################################
 
 import numpy as np
 import matplotlib.pyplot as plt
-#identificar cuantos de cada clase np.sum(m == 8)
 data_1,labels_1 = get_data(load_cifar10_1())
 data_2,labels_2 = get_data(load_cifar10_2())
-#data_3,labels_3 = get_data(load_cifar10_3())
-#data_4,labels_4 = get_data(load_cifar10_4())
-#data_5,labels_5 = get_data(load_cifar10_5())
-data_test,labels_test=get_data(load_cifar10_test())
-
-#prueba = np.zeros((1000,32,32))
-#prueba[0] = data_1[1][:][:]
 
 BigData = np.concatenate((data_1,data_2))
 BigLabels = np.concatenate((labels_1,labels_2))
-clase_0 = np.zeros((1000,32,32))
-clase_1 = np.zeros((1000,32,32))
-clase_2 = np.zeros((1000,32,32))
-clase_3 = np.zeros((1000,32,32))
-clase_4 = np.zeros((1000,32,32))
-clase_5 = np.zeros((1000,32,32))
-clase_6 = np.zeros((1000,32,32))
-clase_7 = np.zeros((1000,32,32))
-clase_8 = np.zeros((1000,32,32))
-clase_9 = np.zeros((1000,32,32))
+#Balancing the classes,a represents the number of images per class to train
+a=100
+clase_0 = np.zeros((a,32,32))
+clase_1 = np.zeros((a,32,32))
+clase_2 = np.zeros((a,32,32))
+clase_3 = np.zeros((a,32,32))
+clase_4 = np.zeros((a,32,32))
+clase_5 = np.zeros((a,32,32))
+clase_6 = np.zeros((a,32,32))
+clase_7 = np.zeros((a,32,32))
+clase_8 = np.zeros((a,32,32))
+clase_9 = np.zeros((a,32,32))
 
-#for i in range(10000): 
-#plt.imshow(clase_0[1])
-cont=0; 
+cont=0;
 i = 0;
-while(cont<1000 and i<20000):
+while(cont<a and i<20000):
    if BigLabels[i]==0:
-       clase_0[cont][:][:]=BigData[i]
-       cont=cont+1
-   i = i+1    
-cont=0; 
+    clase_0[cont][:][:]=BigData[i]
+    cont=cont+1
+   i = i+1
+cont=0;
 i = 0;
-while(cont<1000 and i<20000):
+while(cont<a and i<20000):
    if BigLabels[i]==1:
        clase_1[cont][:][:]=BigData[i]
        cont=cont+1
    i = i+1
-cont=0; 
+cont=0;
 i = 0;
-while(cont<1000 and i<20000):
+while(cont<a and i<20000):
    if BigLabels[i]==2:
        clase_2[cont][:][:]=BigData[i]
        cont=cont+1
    i = i+1
-cont=0; 
+cont=0;
 i = 0;
-while(cont<1000 and i<20000):
+while(cont<a and i<20000):
    if BigLabels[i]==3:
        clase_3[cont][:][:]=BigData[i]
        cont=cont+1
    i = i+1
-cont=0; 
+cont=0;
 i = 0;
-while(cont<1000 and i<20000):
+while(cont<a and i<20000):
    if BigLabels[i]==4:
        clase_4[cont][:][:]=BigData[i]
        cont=cont+1
    i = i+1
-cont=0; 
+cont=0;
 i = 0;
-while(cont<1000 and i<20000):
+while(cont<a and i<20000):
    if BigLabels[i]==5:
        clase_5[cont][:][:]=BigData[i]
        cont=cont+1
    i = i+1
-cont=0; 
+cont=0;
 i = 0;
-while(cont<1000 and i<20000):
+while(cont<a and i<20000):
    if BigLabels[i]==6:
        clase_6[cont][:][:]=BigData[i]
        cont=cont+1
    i = i+1
-cont=0; 
+cont=0;
 i = 0;
-while(cont<1000 and i<20000):
+while(cont<a and i<20000):
    if BigLabels[i]==7:
        clase_7[cont][:][:]=BigData[i]
        cont=cont+1
    i = i+1
-cont=0; 
+cont=0;
 i = 0;
-while(cont<1000 and i<20000):
+while(cont<a and i<20000):
    if BigLabels[i]==8:
        clase_8[cont][:][:]=BigData[i]
        cont=cont+1
    i = i+1
-cont=0; 
+cont=0;
 i = 0;
-while(cont<1000 and i<20000):
+while(cont<a and i<20000):
    if BigLabels[i]==9:
        clase_9[cont][:][:]=BigData[i]
        cont=cont+1
-   i = i+1   
-#Array de 10000,32,32 con 1k de imagenes por clase
-DataBalanced = np.concatenate((clase_0,clase_1,clase_2,clase_3,clase_4,clase_5,
-                               clase_6,clase_7,clase_8,clase_9))
-#Array de 10000 con los etiquetas 
-LabelsBalanced = np.concatenate((np.zeros((1000)),np.zeros((1000))+1,np.zeros((1000))+2,
-                                 np.zeros((1000))+3,np.zeros((1000))+4,np.zeros((1000))+5,
-                                 np.zeros((1000))+6,np.zeros((1000))+7,np.zeros((1000))+8,
-                                 np.zeros((1000))+9))
-#solo por probar:
-DataBalanced= DataBalanced[0:10,:,:]
-LabelsBalanced = LabelsBalanced[0:10]
+   i = i+1
 
+DataBalanced = np.concatenate((clase_0,clase_1,clase_2,clase_3,clase_4,clase_5,
+                           clase_6,clase_7,clase_8,clase_9))
+
+LabelsBalanced = np.concatenate((np.zeros((a)),np.zeros((a))+1,np.zeros((a))+2,
+                             np.zeros((a))+3,np.zeros((a))+4,np.zeros((a))+5,
+                             np.zeros((a))+6,np.zeros((a))+7,np.zeros((a))+8,
+                             np.zeros((a))+9))
 import sys
+k = 16*10
+
 sys.path.append('python')
 
-#Create a filter bank with deafult params
+#Create a filter bank with default params
 from fbCreate import fbCreate
 fb = fbCreate(support=2, startSigma=0.6) # fbCreate(**kwargs, vis=True) for visualization
 
@@ -261,8 +247,6 @@ for i in range(0,len(DataBalanced)-1):
     acum = np.hstack((acum,DataBalanced[i+1,:,:]))
 
 filterResponses = fbRun(fb,acum)
-
-k = 16*2
 
 from computeTextons import computeTextons
 map, textons = computeTextons(filterResponses, k)
@@ -281,15 +265,51 @@ def histc(X, bins):
         r[i-1] += 1
     return np.array(r)
 
-histogramas = numpy.zeros((len(DataBalanced),32), dtype=float)
+histogramas = numpy.zeros((len(DataBalanced),k), dtype=float)
 for i in range(0,len(tmap)):
-  # histogramas[i,:,:] = histc(tmap[i,:,:].flatten(), np.arange(k))/tmap[i,:,:].size
-    histogramas[i] = histc(tmap[i].flatten(), np.arange(k))/tmap[i].size            
-    
-from sklearn.neighbors import KNeighborsClassifier
-neigh = KNeighborsClassifier(n_neighbors=1)
-neigh.fit(histogramas, LabelsBalanced) 
-print(neigh.predict([histogramas[1],histogramas[2],histogramas[9],histogramas[4]]))
+    histogramas[i] = histc(tmap[i].flatten(), np.arange(k))/tmap[i].size
 
-#print(neigh.predict_proba([[0.9]]))
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import chi2
+from sklearn.feature_selection import SelectKBest
+
+#Apllying Chi-Square
+histogramas = SelectKBest(chi2, k=2).fit_transform(histogramas, LabelsBalanced)
+#Fitting the models
+modelo_KNN = KNeighborsClassifier(n_neighbors=50,weights = 'distance',p=1)
+modelo_KNN.fit(histogramas, LabelsBalanced)
+prediction_KNN = modelo_KNN.predict(histogramas)
+
+modelo_TREE = RandomForestClassifier(n_estimators=100, max_depth=500, random_state=0)
+modelo_TREE.fit(histogramas,LabelsBalanced)
+prediction_TREE = modelo_TREE.predict(histogramas)
+
+from sklearn.metrics import accuracy_score
+ACA_KNN = accuracy_score(prediction_KNN,LabelsBalanced)
+ACA_TREE = accuracy_score(prediction_TREE, LabelsBalanced)
+
+class_names = np.arange(0,10)
+
+import itertools
+from sklearn.metrics import confusion_matrix
+
+confusionmat_KNN = confusion_matrix(LabelsBalanced,prediction_KNN)
+confusionmat_TREE = confusion_matrix(LabelsBalanced,prediction_TREE)
+
+print('Con un número de imágenes de:'+str(num_a))
+print('El ACA de KNN es de: '+ str(ACA_KNN))
+print('El ACA de RandomForest es de: '+ str(ACA_TREE))
+plt.close()
+#Saving the models
+from sklearn.externals import joblib
+filename = 'model_KNN.pk1'
+joblib.dump(modelo_KNN, filename)
+
+from sklearn.externals import joblib
+filename = 'model_RandomForest.pk1'
+joblib.dump(modelo_TREE, filename)
+
+import test_final
+test_final
 
