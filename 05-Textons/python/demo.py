@@ -125,7 +125,7 @@ rN2 = ar.randint(0,100)
 rN3 = ar.randint(0,100)
 rN4 = ar.randint(0,100)
 
-demoImgs = np.zeros(4,32,32)
+demoImgs = np.zeros((4,32,32))
 demoImgs[0] = data_test[rN1]
 demoImgs[1] = data_test[rN2]
 demoImgs[2] = data_test[rN3]
@@ -133,7 +133,7 @@ demoImgs[3] = data_test[rN4]
 
 data_test = demoImgs
 
-labels = demoImgs = np.zeros(4)
+labels = demoImgs = np.zeros((4))
 labels[0] = labels_test[rN1]
 labels[1] = labels_test[rN2]
 labels[2] = labels_test[rN3]
@@ -190,24 +190,7 @@ prediction_TREE = modelo_TREE.predict(histogramas)
 
 prediction_KNN = modelo_KNN.predict(histogramas)
 
-
-from PIL import ImageDraw, ImageFont
-draw1 = ImageDraw.Draw(data_test[1])
-draw2 = ImageDraw.Draw(data_test[1])
-draw3 = ImageDraw.Draw(data_test[1])
-draw4 = ImageDraw.Draw(data_test[1])
-
-fuente = ImageFont.truetype('arial.ttf',10)
-reDraw1 = draw1.text((11,11),str(prediction_TREE[0]),fill="black",font=fuente)
-reDraw2 = draw2.text((11,11),str(prediction_TREE[1]),fill="black",font=fuente)
-reDraw3 = draw3.text((11,11),str(prediction_TREE[2]),fill="black",font=fuente)
-reDraw4 = draw4.text((11,11),str(prediction_TREE[3]),fill="black",font=fuente)
-demoEt = numpy.zeros(4,32,32)
-demoEt[0] = reDraw1
-demoEt[1] = reDraw2
-demoEt[2] = reDraw3
-demoEt[3] = reDraw4
-demoMaps = numpy.zeros(4,32,32)
+demoMaps = numpy.zeros((4,32,32))
 demoMaps[0] = tmap[0]
 demoMaps[1] = tmap[1]
 demoMaps[2] = tmap[2]
@@ -218,9 +201,20 @@ plt.figure(figsize=(8,8))
 for k in range(4):
     plt.subplot(2,4,k+1)
     #plt.title(str(i)+'.jpg')
-    plt.imshow(demoEt[k])
+    plt.imshow(data_test[k])
+    plt.text(10,10,prediction_KNN[k],fontsize=12)
+    plt.text(20,20,prediction_TREE[k],fontsize=12)
 for k in range(4,8):
     plt.subplot(2,4,k+1)
     #plt.title(str(i)+'.jpg')
-    plt.imshow(demoMaps[k])    
+    plt.imshow(demoMaps[k-4])    
 plt.show()
+
+from sklearn.metrics import accuracy_score
+ACA_TREE = accuracy_score(prediction_TREE,labels_test)
+ACA_KNN = accuracy_score(prediction_KNN,labels_test)
+print('Predictions:'+str(prediction_KNN)+str(prediction_TREE))
+print('Labels:'+str(labels_test))
+
+print('ACA KNN : '+ str(ACA_KNN))
+print('ACA RandomForest : '+ str(ACA_TREE))
