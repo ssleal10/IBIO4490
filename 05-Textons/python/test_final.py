@@ -125,8 +125,8 @@ data_test,labels_test=get_data(load_cifar10_test())
 #prueba = np.zeros((1000,32,32))
 #prueba[0] = data_1[1][:][:]
 
-data_test = data_test[0:1000,:,:]
-labels_test = labels_test[0:1000]
+data_test = data_test[0:10,:,:]
+labels_test = labels_test[0:10]
 #solo por probar:
 
 import sys
@@ -223,7 +223,7 @@ def plot_confusion_matrix(cm, classes,
     
 confusionmat_KNN = confusion_matrix(labels_test,prediction_KNN)
 confusionmat_TREE = confusion_matrix(labels_test,prediction_TREE)
-np.set_printoptions(precision=2)
++np.set_printoptions(precision=2)
 #    
 # Plot non-normalized confusion matrix
 plt.figure()
