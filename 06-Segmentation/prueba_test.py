@@ -23,7 +23,7 @@ for i in range(0, len(methods)):
     for j in range(0,len(mylist)):
 #    jaccards[i] = segmentByClustering(mylist[i],"lab","kmeans",3)
 #jaccard_final = np.mean(jaccards)
-      jaccards[i,j] = segmentByClustering(mylist[j],"lab",methods[i],4)
+      jaccards[i,j] = segmentByClustering(mylist[j],"rgb",methods[i],4)
 
 jaccard_methods = np.zeros((len(methods)))
 jaccard_methods[0] = np.mean(jaccards[0,:])
