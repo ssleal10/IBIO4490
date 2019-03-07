@@ -393,7 +393,7 @@ def segmentByClustering(rgbImage, colorSpace, clusteringMethod, numberOfClusters
                segmented_img = kmeans.labels_
                segmented_img = segmented_img.reshape((fils,cols))
                #segmented_img = segmented_img.astype(np.uint8)
-               imshow(rgb,segmented_img,title = rgbImage)
+               #imshow(rgb,segmented_img,title = rgbImage)
                
         elif (clusteringMethod is "gmm"):
                X = rgb.reshape(fils*cols, 3)
@@ -403,7 +403,7 @@ def segmentByClustering(rgbImage, colorSpace, clusteringMethod, numberOfClusters
                cluster = cluster.reshape(fils,cols)
                #cluster = cluster.astype(np.uint8)
                segmented_img = cluster
-               imshow(rgb,segmented_img,title = rgbImage)
+               #imshow(rgb,segmented_img,title = rgbImage)
                
         elif (clusteringMethod is "hierarchical"):
                rgb2 = resize(rgb, (int(rgb.shape[0] / 4), int(rgb.shape[1] / 4)),
@@ -417,7 +417,7 @@ def segmentByClustering(rgbImage, colorSpace, clusteringMethod, numberOfClusters
                segmented_img = labels.reshape(fils,cols)
                #segmented_img = segmented_img.astype(np.uint8)
                segmented_img= misc.imresize(segmented_img,(rgb.shape[0],rgb.shape[1]),interp='bicubic')
-               imshow(rgb,segmented_img,title = rgbImage)
+               #imshow(rgb,segmented_img,title = rgbImage)
                
         elif (clusteringMethod is "watershed"):
                rgb= np.mean(rgb,axis=2)
@@ -425,7 +425,7 @@ def segmentByClustering(rgbImage, colorSpace, clusteringMethod, numberOfClusters
                marks=ndimage.label(local_maxima)[0]
                segmented_img=watershed(rgb,marks)
                segmented_img =segmented_img
-               imshow(rgb,segmented_img, title= rgbImage)
+               #imshow(rgb,segmented_img, title= rgbImage)
                
                
                
