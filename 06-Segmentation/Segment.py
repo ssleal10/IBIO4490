@@ -469,7 +469,11 @@ def segmentByClustering(rgbImage, colorSpace, clusteringMethod, numberOfClusters
 #            intersection[i,j]=sobel[i,j]* boundaries[i,j]
     #plt.imshow(intersection)
     #plt.show
-    return counts[2]/counts[1]*100
+    if(len(counts) == 3):
+        rta = counts[2]/ counts[1] *100
+    else:
+        rta = 0
+    return rta
  
              
      
