@@ -2,14 +2,14 @@
 clc
 clear all
 close all
-testDir = dir('../data/test_scenes/test_jpg/');
+testDir = dir('LabHOG/data/test_scenes/test_jpg/');
 
 detector = vision.CascadeObjectDetector;
 fopen('viola_jones_bboxes.txt','w');
 
 fclose all;
 for i = 3:size(testDir,1)
-    image = imread(strcat('../data/test_scenes/test_jpg/',testDir(i).name));
+    image = imread(strcat('LabHOG/data/test_scenes/test_jpg/',testDir(i).name));
     bboxes = step (detector,image);
     
     %To Show the bounding boxes adn the image:
@@ -41,4 +41,4 @@ gt_bboxes = double(gt_bboxes);
 npos = size(gt_ids,1);
 confidences = ones(npos,1);
 
-evaluate_detections(gt_bboxes, confidences, gt_ids, '../data/test_scenes/ground_truth_bboxes_face_only.txt')
+evaluate_detections(gt_bboxes, confidences, gt_ids, 'LabHOG/data/test_scenes/ground_truth_bboxes_face_only.txt')
