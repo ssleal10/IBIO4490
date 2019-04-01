@@ -35,10 +35,10 @@
 % set up paths to VLFeat functions. 
 % See http://www.vlfeat.org/matlab/matlab.html for VLFeat Matlab documentation
 % This should work on 32 and 64 bit versions of Windows, MacOS, and Linux
-webread('http://bcv001.uniandes.edu.co/LabHOG.zip')
-unzip('LabHOG.zip')
-webread('http://www.vlfeat.org/download/vlfeat-0.9.21-bin.tar.gz')
-untar('vlfeat-0.9.21-bin.tar.gz')
+webread('http://bcv001.uniandes.edu.co/LabHOG.zip');
+unzip('LabHOG.zip');
+webread('http://www.vlfeat.org/download/vlfeat-0.9.21-bin.tar.gz');
+untar('vlfeat-0.9.21-bin.tar.gz');
 run('vlfeat-0.9.21/toolbox/vl_setup.m');
 close all
 clear
