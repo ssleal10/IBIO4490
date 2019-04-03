@@ -9,7 +9,7 @@ def sigmoid(x):
 
 def get_data():
     # angry, disgust, fear, happy, sad, surprise, neutral
-    with open("fer2013.csv") as f:
+    with open("fer2013/fer2013.csv") as f:
         content = f.readlines()
 
     lines = np.array(content)
