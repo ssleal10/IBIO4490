@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Apr  2 19:57:31 2019
+
+@author: Usuario
+"""
+
 
 # read kaggle facial expression recognition challenge dataset (fer2013.csv)
 # https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge
@@ -92,12 +99,21 @@ def train(model):
         out = model.forward(x_test)                
         loss_test = model.compute_loss(out, y_test)
         print('Epoch {:6d}: {:.5f} | test: {:.5f}'.format(i, np.array(loss).mean(), loss_test))
-	# plot()
+        plot(np.array(loss).mean(),loss_test,i)
 
-def plot(): # Add arguments
+def plot(loss,loss_test,epochs): # Add arguments
     # CODE HERE
     # Save a pdf figure with train and test losses
-    pass
+    
+    #x = range(epochs)
+    x = epochs
+    
+    plt.plot(x, loss, label='train')
+    plt.plot(x, loss_test, label='test')
+    plt.legend()
+    plt.xlabel("iterations")
+    plt.ylabel("loss")
+    plt.savefig('t.pdf')   
 
 def test(model):
     # _, _, x_test, y_test = get_data()
