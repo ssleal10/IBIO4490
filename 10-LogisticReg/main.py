@@ -9,7 +9,7 @@ def sigmoid(x):
 
 def get_data():
     # angry, disgust, fear, happy, sad, surprise, neutral
-    with open("fer2013/fer2013.csv") as f:
+    with open("fer2013.csv") as f:
         content = f.readlines()
 
     lines = np.array(content)
@@ -77,7 +77,6 @@ class Model():
         b_grad = np.sum(pred-gt)/image.shape[0]
         self.b -= b_grad*self.lr
 
-
 def train(model):
     x_train, y_train, x_test, y_test = get_data()
     batch_size = 100 # Change if you want
@@ -92,26 +91,16 @@ def train(model):
             model.compute_gradient(_x_train, out, _y_train)
         out = model.forward(x_test)                
         loss_test = model.compute_loss(out, y_test)
-        print('Epoch {:6d}: {:.5f} | test: {:.5f}'.format(i, np.array(loss).mean(), loss_test))     
-        print(np.array(loss).mean(),)
-        print(loss_test)
-        #plot(loss,loss_test,epochs)
-        
-def plot(loss,loss_test,epochs): # Add arguments
+        print('Epoch {:6d}: {:.5f} | test: {:.5f}'.format(i, np.array(loss).mean(), loss_test))
+	# plot()
+
+def plot(): # Add arguments
     # CODE HERE
     # Save a pdf figure with train and test losses
-    
-    x = range(epochs)
-    
-    plt.plot(x, loss, label='train')
-    plt.plot(x, loss_test, label='test')
-    plt.legend()
-    plt.xlabel("iterations")
-    plt.ylabel("loss")
-    plt.savefig('t.pdf')        
- 
+    pass
+
 def test(model):
-    _, _, x_test, y_test = get_data()
+    # _, _, x_test, y_test = get_data()
     # YOU CODE HERE
     # Show some qualitative results and the total accuracy for the whole test set
     pass
