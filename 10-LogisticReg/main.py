@@ -92,8 +92,10 @@ def train(model):
             model.compute_gradient(_x_train, out, _y_train)
         out = model.forward(x_test)                
         loss_test = model.compute_loss(out, y_test)
-        print('Epoch {:6d}: {:.5f} | test: {:.5f}'.format(i, np.array(loss).mean(), loss_test))        
-        plot(loss,loss_test,epochs)
+        print('Epoch {:6d}: {:.5f} | test: {:.5f}'.format(i, np.array(loss).mean(), loss_test))     
+        print(loss)
+        print(loss_test)
+        #plot(loss,loss_test,epochs)
         
 def plot(loss,loss_test,epochs): # Add arguments
     # CODE HERE
@@ -101,8 +103,8 @@ def plot(loss,loss_test,epochs): # Add arguments
     
     x = range(epochs)
     
-    plt.plot([x], [loss], label='train')
-    plt.plot([x], [loss_test], label='test')
+    plt.plot(x, loss, label='train')
+    plt.plot(x, loss_test, label='test')
     plt.legend()
     plt.xlabel("iterations")
     plt.ylabel("loss")
