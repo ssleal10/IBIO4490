@@ -78,9 +78,6 @@ class Model():
         self.b -= b_grad*self.lr
 
 def train(model):
-    losses = []
-    losses_train = []
-    aux = []
     x_train, y_train, x_test, y_test = get_data()
     batch_size = 100 # Change if you want
     epochs = 40000 # Change if you want
@@ -98,7 +95,6 @@ def train(model):
         losses.append(np.array(loss).mean())
         losses_train.append(loss_test)
         aux.append(i)    
-        plot(losses,losses_train,aux)
 
 def plot(loss,loss_test,epochs): # Add arguments
     # CODE HERE
@@ -121,6 +117,11 @@ def test(model):
     pass
 
 if __name__ == '__main__':
+    losses = []
+    losses_train = []
+    aux = []
     model = Model()
     train(model)
     test(model)
+    
+    plot(losses,losses_train,aux)
