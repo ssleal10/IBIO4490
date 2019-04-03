@@ -93,7 +93,7 @@ def train(model):
         out = model.forward(x_test)                
         loss_test = model.compute_loss(out, y_test)
         print('Epoch {:6d}: {:.5f} | test: {:.5f}'.format(i, np.array(loss).mean(), loss_test))     
-        print(loss)
+        print(np.array(loss).mean(),)
         print(loss_test)
         #plot(loss,loss_test,epochs)
         
