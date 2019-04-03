@@ -9,7 +9,7 @@ def sigmoid(x):
 
 def get_data():
     # angry, disgust, fear, happy, sad, surprise, neutral
-    with open("fer2013/fer2013.csv") as f:
+    with open("fer2013.csv") as f:
         content = f.readlines()
 
     lines = np.array(content)
@@ -92,13 +92,11 @@ def train(model):
         out = model.forward(x_test)                
         loss_test = model.compute_loss(out, y_test)
         print('Epoch {:6d}: {:.5f} | test: {:.5f}'.format(i, np.array(loss).mean(), loss_test))        
-	plot(loss,loss_test)
+        plot(loss,loss_test,epochs)
 
-def plot(loss,loss_test): # Add arguments
+def plot(loss,loss_test,epochs): # Add arguments
     # CODE HERE
     # Save a pdf figure with train and test losses
-    import matplotlib.pyplot as plt
-    import numpy as np
     
     y = [loss,loss_test]
     x = range(epochs)
@@ -106,13 +104,13 @@ def plot(loss,loss_test): # Add arguments
     for xe, ye in zip(x, y):
         plt.scatter([xe] * len(ye), ye)
     
-    plt.legend(lines[:2], ['train loss', 'test loss']);
+    plt.legend(['train loss', 'test loss']);
     plt.xlabel('iterations', fontsize=18)
     plt.ylabel('losses', fontsize=16)
     plt.savefig('plot_losses.pdf')
     
     #pass
-
+ 
 def test(model):
     _, _, x_test, y_test = get_data()
     # YOU CODE HERE
