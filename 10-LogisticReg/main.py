@@ -9,7 +9,7 @@ def sigmoid(x):
 
 def get_data():
     # angry, disgust, fear, happy, sad, surprise, neutral
-    with open("fer2013/fer2013.csv") as f:
+    with open("fer2013.csv") as f:
         content = f.readlines()
 
     lines = np.array(content)
@@ -78,6 +78,9 @@ class Model():
         self.b -= b_grad*self.lr
 
 def train(model):
+    losses = []
+    losses_train = []
+    aux = []
     x_train, y_train, x_test, y_test = get_data()
     batch_size = 100 # Change if you want
     epochs = 40000 # Change if you want
@@ -91,9 +94,11 @@ def train(model):
             model.compute_gradient(_x_train, out, _y_train)
         out = model.forward(x_test)                
         loss_test = model.compute_loss(out, y_test)
-        plot(np.array(loss).mean(),loss_test,i)
         print('Epoch {:6d}: {:.5f} | test: {:.5f}'.format(i, np.array(loss).mean(), loss_test))
-      
+        losses.append(np.array(loss).mean())
+        losses_train.append(loss_test)
+        aux.append(i)    
+        plot(losses,losses_train,aux)
 
 def plot(loss,loss_test,epochs): # Add arguments
     # CODE HERE
@@ -107,7 +112,7 @@ def plot(loss,loss_test,epochs): # Add arguments
     plt.legend()
     plt.xlabel("iterations")
     plt.ylabel("loss")
-    plt.savefig('t.pdf')   
+    plt.savefig('t.pdf') 
 
 def test(model):
     # _, _, x_test, y_test = get_data()
