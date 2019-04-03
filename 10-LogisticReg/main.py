@@ -91,8 +91,9 @@ def train(model):
             model.compute_gradient(_x_train, out, _y_train)
         out = model.forward(x_test)                
         loss_test = model.compute_loss(out, y_test)
-        print('Epoch {:6d}: {:.5f} | test: {:.5f}'.format(i, np.array(loss).mean(), loss_test))
         plot(np.array(loss).mean(),loss_test,i)
+        print('Epoch {:6d}: {:.5f} | test: {:.5f}'.format(i, np.array(loss).mean(), loss_test))
+      
 
 def plot(loss,loss_test,epochs): # Add arguments
     # CODE HERE
