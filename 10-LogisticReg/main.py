@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Apr  2 19:57:31 2019
-
-@author: Usuario
-"""
-
 
 # read kaggle facial expression recognition challenge dataset (fer2013.csv)
 # https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge
