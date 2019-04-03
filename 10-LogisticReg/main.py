@@ -77,6 +77,22 @@ class Model():
         b_grad = np.sum(pred-gt)/image.shape[0]
         self.b -= b_grad*self.lr
 
+
+def plot(loss,loss_test,epochs): # Add arguments
+    # CODE HERE
+    # Save a pdf figure with train and test losses
+    
+    y = [loss,loss_test]
+    x = range(epochs)
+    
+    for xe, ye in zip(x, y):
+        plt.scatter([xe] * len(ye), ye)
+    
+    plt.legend(['train loss', 'test loss']);
+    plt.xlabel('iterations', fontsize=18)
+    plt.ylabel('losses', fontsize=16)
+    plt.savefig('plot_losses.pdf')
+
 def train(model):
     x_train, y_train, x_test, y_test = get_data()
     batch_size = 100 # Change if you want
@@ -93,23 +109,6 @@ def train(model):
         loss_test = model.compute_loss(out, y_test)
         print('Epoch {:6d}: {:.5f} | test: {:.5f}'.format(i, np.array(loss).mean(), loss_test))        
         plot(loss,loss_test,epochs)
-
-def plot(loss,loss_test,epochs): # Add arguments
-    # CODE HERE
-    # Save a pdf figure with train and test losses
-    
-    y = [loss,loss_test]
-    x = range(epochs)
-    
-    for xe, ye in zip(x, y):
-        plt.scatter([xe] * len(ye), ye)
-    
-    plt.legend(['train loss', 'test loss']);
-    plt.xlabel('iterations', fontsize=18)
-    plt.ylabel('losses', fontsize=16)
-    plt.savefig('plot_losses.pdf')
-    
-    #pass
  
 def test(model):
     _, _, x_test, y_test = get_data()
