@@ -116,6 +116,8 @@ def test(model):
     # Show some qualitative results and the total accuracy for the whole test set
     _, _, x_test, y_test = get_data()
     y_score = model.forward(x_test)  
+    threshold, upper, lower = 0.5, 1, 0
+    y_score = np.where(y_score>threshold, upper, lower)
     #PR curve, F1 and normalized ACA.
     #PR
     from sklearn.metrics import average_precision_score
