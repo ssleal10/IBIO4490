@@ -80,7 +80,7 @@ class Model():
 def train(model):
     x_train, y_train, x_test, y_test = get_data()
     batch_size = 100 # Change if you want
-    epochs = 40000 # Change if you want
+    epochs = 4 # Change if you want
     for i in range(epochs):
         loss = []
         for j in range(0,x_train.shape[0], batch_size):
