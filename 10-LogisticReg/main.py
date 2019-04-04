@@ -160,7 +160,7 @@ def test(model):
         cont1 = cont1 + conf[i,i]/sum(conf[:,i])
         cont2 = cont2 +1
     ACA = cont1/cont2    
-    print ('ACA = ',ACA)   
+    print ('ACA: {0:0.3f}'.format(ACA))    
 
 if __name__ == '__main__':
     import os
