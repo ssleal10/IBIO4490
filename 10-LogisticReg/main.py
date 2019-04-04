@@ -151,6 +151,16 @@ def test(model):
     #normalized ACA
     from sklearn.metrics import confusion_matrix
     confusion_matrix(y_test, y_score)
+    from sklearn.metrics import confusion_matrix
+    conf = confusion_matrix(y_test, y_score)
+
+    cont1 = 0
+    cont2 = 0
+    for i in range(conf.shape[1]):
+        cont1 = cont1 + conf[i,i]/sum(conf[:,i])
+        cont2 = cont2 +1
+    ACA = cont1/cont2    
+    print ('ACA = ',ACA)   
 
 if __name__ == '__main__':
     import os
