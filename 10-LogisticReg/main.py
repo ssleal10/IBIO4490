@@ -56,7 +56,7 @@ class Model():
     def __init__(self):
         params = 48*48 # image reshape
         out = 1 # smile label
-        self.lr = 0.001 # Change if you want
+        self.lr = 0.003 # Change if you want
         self.W = np.random.randn(params, out)
         self.b = np.random.randn(out)
 
@@ -80,7 +80,7 @@ class Model():
 def train(model):
     x_train, y_train, x_test, y_test = get_data()
     batch_size = 100 # Change if you want
-    epochs = 10 # Change if you want
+    epochs = 40000 # Change if you want
     for i in range(epochs):
         loss = []
         for j in range(0,x_train.shape[0], batch_size):
@@ -116,6 +116,8 @@ def test(model):
     # Show some qualitative results and the total accuracy for the whole test set
     _, _, x_test, y_test = get_data()
     y_score = model.forward(x_test)  
+    print(y_test)
+    print(y_score)
     threshold, upper, lower = 0.5, 1, 0
     y_score = np.where(y_score>threshold, upper, lower)
     #PR curve, F1 and normalized ACA.
@@ -141,6 +143,7 @@ def test(model):
     plt.ylim([0.0, 1.05])
     plt.xlim([0.0, 1.0])
     plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(average_precision))
+    plt.show()
     #F1
     from sklearn.metrics import f1_score
     f1 = f1_score(y_test, y_score, average='macro')  
