@@ -62,20 +62,22 @@ class Model():
         self.lr = 0.003 # Change if you want
         
         #self.W = np.random.randn(params, out)
-        self.W = np.zeros([48*48,7])
+        #self.W = np.zeros([48*48,7])
+        self.W = np.random.randn(48*48, 7)
         #self.b = np.random.randn(out)
-        self.W = np.zeros([1,7])
-        self.params = [self.W, self.b]
-        np.ones
-        
+        #self.W = np.zeros([1,7])
+        self.b = np.random.randn(1,7)
+        self.params = [self.W, self.b]        
 
     def forward(self, image):
         image = image.reshape(image.shape[0], -1)
-
         #out = np.dot(image, self.W) + self.b
-
+        #print(image.shape)
+        #print(self.W.shape)
+        #print(self.b.shape)
         self.y_given_x = softmax(np.dot(image, self.W) + self.b)
-        prediction = np.argmax(self.y_given_x, axis=1)
+        #print(self.y_given_x)
+        prediction =np.argmax(self.y_given_x, axis=1) 
         return prediction
 
     #def compute_loss(self, pred, gt):
@@ -87,15 +89,27 @@ class Model():
     #def cross_entropy(X,y):
     def compute_loss(self, pred, gt):
         # Log loss of the correct class of each of our samples
-        ## Log loss of the correct class of each of our samples
-        #log_likelihood = -np.multiply(np.log(softmax(pred)),gt)
+        # Log loss of the correct class of each of our samples
+        log_likelihood = -np.multiply(np.log(pred),gt)
         # Compute the average loss
-        #loss = np.sum(log_likelihood)/range(gt.shape[0])
-        return -np.mean(np.log(pred)[np.arange(gt.shape[0]), gt])
+        loss = np.sum(log_likelihood)/gt.shape[0]
+        #print(gt.dtype)
+        #gt = gt.astype(np.int64)
+        #print('gt',gt.dtype)
+        #return -np.mean(np.log(pred)[np.arange(gt.shape[0]), gt])
+        return loss
 
     def compute_gradient(self, image, pred, gt):
         image = image.reshape(image.shape[0], -1)
-        W_grad = np.dot(image.T, pred-gt)/image.shape[0]
+        pred = pred.astype(np.float64)
+        pred = np.array([pred])
+        pred = np.transpose(pred)
+        #print('pred',pred)
+        #print('gt',gt)
+        resta = np.subtract(pred,gt)
+        #print('resta',resta)
+        W_grad = np.dot(image.T, resta)/image.shape[0]
+        #print('wgrad',W_grad.shape)
         self.W -= W_grad*self.lr
         b_grad = np.sum(pred-gt)/image.shape[0]
         self.b -= b_grad*self.lr
@@ -103,14 +117,16 @@ class Model():
 
 def train(model):
     x_train, y_train, x_test, y_test = get_data()
-    batch_size = 100 # Change if you want
+    batch_size = 10 # Change if you want
     epochs = 4 # Change if you want
     for i in range(epochs):
         loss = []
         for j in range(0,x_train.shape[0], batch_size):
             _x_train = x_train[j:j+batch_size]
             _y_train = y_train[j:j+batch_size]
-            out = model.forward(_x_train,1)
+            out = model.forward(_x_train)
+            #print('out',out.dtype)
+            out = out.astype(np.float64)
             loss.append(model.compute_loss(out, _y_train))
             model.compute_gradient(_x_train, out, _y_train)
         out = model.forward(x_test)                
@@ -142,32 +158,32 @@ def test(model):
     y_score = model.forward(x_test)  
     print(y_test)
     print(y_score)
-    threshold, upper, lower = 0.5, 1, 0
-    y_score = np.where(y_score>threshold, upper, lower)
+    #threshold, upper, lower = 0.5, 1, 0
+    #y_score = np.where(y_score>threshold, upper, lower)
     #PR curve, F1 and normalized ACA.
     #PR
-    from sklearn.metrics import average_precision_score
-    average_precision = average_precision_score(y_test, y_score)  
-    print('Average precision-recall score: {0:0.2f}'.format(average_precision))                
+    #from sklearn.metrics import average_precision_score
+    #average_precision = average_precision_score(y_test, y_score)  
+    #print('Average precision-recall score: {0:0.2f}'.format(average_precision))                
     #loss_test = model.compute_loss(out, y_test)         
-    from sklearn.metrics import precision_recall_curve
-    import matplotlib.pyplot as plt
-    from sklearn.utils.fixes import signature
+    #from sklearn.metrics import precision_recall_curve
+    #import matplotlib.pyplot as plt
+    #from sklearn.utils.fixes import signature
     
-    precision, recall, _ = precision_recall_curve(y_test, y_score)
-    step_kwargs = ({'step': 'post'}
-                   if 'step' in signature(plt.fill_between).parameters
-                   else {})
-    plt.step(recall, precision, color='b', alpha=0.2,
-             where='post')
-    plt.fill_between(recall, precision, alpha=0.2, color='b', **step_kwargs)
-    
-    plt.xlabel('Recall')
-    plt.ylabel('Precision')
-    plt.ylim([0.0, 1.05])
-    plt.xlim([0.0, 1.0])
-    plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(average_precision))
-    plt.show()
+    #precision, recall, _ = precision_recall_curve(y_test, y_score)
+    #step_kwargs = ({'step': 'post'}
+     #              if 'step' in signature(plt.fill_between).parameters
+      #             else {})
+    #plt.step(recall, precision, color='b', alpha=0.2,
+    #         where='post')
+    #plt.fill_between(recall, precision, alpha=0.2, color='b', **step_kwargs)
+    #
+    #plt.xlabel('Recall')
+    #plt.ylabel('Precision')
+    #plt.ylim([0.0, 1.05])
+    #plt.xlim([0.0, 1.0])
+    #plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(average_precision))
+    #plt.show()
     #F1
     from sklearn.metrics import f1_score
     f1 = f1_score(y_test, y_score, average='macro')  
