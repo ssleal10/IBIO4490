@@ -4,9 +4,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def softmax(X):
-    exps = np.exp(X)
-    return exps / np.sum(exps)
+def softmax(y_linear):
+    exps = [np.exp(i) for i in y_linear]
+    sum_of_exps = sum(exps)
+    softmax = [j/sum_of_exps for j in exps]
+    return softmax
 
 def get_data():
     # angry, disgust, fear, happy, sad, surprise, neutral
@@ -59,26 +61,43 @@ class Model():
         #out= 1 
 
         
-        self.lr = 0.003 # Change if you want
+        self.lr = 0.00001 # Change if you want
         
         #self.W = np.random.randn(params, out)
-        #self.W = np.zeros([48*48,7])
+        #self.W = np.ones([48*48,7])*0.5
         self.W = np.random.randn(48*48, 7)
         #self.b = np.random.randn(out)
         #self.W = np.zeros([1,7])
         self.b = np.random.randn(1,7)
-        self.params = [self.W, self.b]        
+        #self.b = np.ones([1,7])
+        #self.params = [self.W, self.b]        
 
     def forward(self, image):
         image = image.reshape(image.shape[0], -1)
         #out = np.dot(image, self.W) + self.b
-        #print(image.shape)
         #print(self.W.shape)
         #print(self.b.shape)
-        self.y_given_x = softmax(np.dot(image, self.W) + self.b)
-        #print(self.y_given_x)
+        #print('dot',np.dot(image, self.W))
+        #print('b',self.b)
+        #self.y_given_x = softmax(np.dot(image, self.W) + self.b)
+        dot = np.dot(image, self.W) + self.b
+        self.y_given_x = np.apply_along_axis(softmax,1,dot)
+        #print('ygivenx',self.y_given_x)
+        
+        
         prediction =np.argmax(self.y_given_x, axis=1) 
-        return prediction
+        
+        
+        
+        #print('pred',prediction)
+        #print('row',self.y_given_x[0][:])
+        #print('col',self.y_given_x[:][0])
+        #print('sum',np.sum(self.y_given_x))
+        #print('sumROW',np.sum(self.y_given_x[0][:]))
+        #print('sumCOL',np.sum(self.y_given_x[:][0]))
+        #print('pred',prediction)
+        #pred = np.array(prediction, dtype=np.float64)
+        return self.y_given_x
 
     #def compute_loss(self, pred, gt):
         #J = (-1/pred.shape[0]) * np.sum(np.multiply(gt, np.log(sigmoid(pred))) + np.multiply((1-gt), np.log(1 - sigmoid(pred))))
@@ -90,9 +109,23 @@ class Model():
     def compute_loss(self, pred, gt):
         # Log loss of the correct class of each of our samples
         # Log loss of the correct class of each of our samples
-        log_likelihood = -np.multiply(np.log(pred),gt)
+        nb_classes = 7
+        
+        y_gt = gt.astype(np.int64)
+        targets_gt = np.array([[y_gt]]).reshape(-1)
+        one_hot_gt = np.eye(nb_classes)[targets_gt]
+        
+        #y_pred = gt.astype(np.int64)
+        #targets_pred = np.array([[y_pred]]).reshape(-1)
+        #one_hot_pred = np.eye(nb_classes)[targets_pred]
+        
+        log_likelihood = -np.multiply(np.log(pred),one_hot_gt)
+        #print('pred',pred)
+        #print('gt',one_hot_gt)
+        #print('log.likeli',log_likelihood)
         # Compute the average loss
         loss = np.sum(log_likelihood)/gt.shape[0]
+        #print('loss',loss)
         #print(gt.dtype)
         #gt = gt.astype(np.int64)
         #print('gt',gt.dtype)
@@ -101,16 +134,31 @@ class Model():
 
     def compute_gradient(self, image, pred, gt):
         image = image.reshape(image.shape[0], -1)
-        pred = pred.astype(np.float64)
-        pred = np.array([pred])
-        pred = np.transpose(pred)
+        
+        #pred = pred.astype(np.float64)
+        #pred = np.array([pred])
+        #pred = np.transpose(pred)
+        
         #print('pred',pred)
         #print('gt',gt)
-        resta = np.subtract(pred,gt)
+        #resta = np.subtract(pred,gt)
         #print('resta',resta)
-        W_grad = np.dot(image.T, resta)/image.shape[0]
+        #W_grad = np.dot(image.T, resta)/image.shape[0]
         #print('wgrad',W_grad.shape)
+        #self.W -= W_grad*self.lr
+        #b_grad = np.sum(pred-gt)/image.shape[0]
+        #self.b -= b_grad*self.lr
+        
+        nb_classes = 7
+        
+        y_gt = gt.astype(np.int64)
+        targets_gt = np.array([[y_gt]]).reshape(-1)
+        one_hot_gt = np.eye(nb_classes)[targets_gt]
+        
+        image = image.reshape(image.shape[0], -1)
+        W_grad = np.dot(image.T, pred-one_hot_gt)/image.shape[0]
         self.W -= W_grad*self.lr
+
         b_grad = np.sum(pred-gt)/image.shape[0]
         self.b -= b_grad*self.lr
 
@@ -118,7 +166,7 @@ class Model():
 def train(model):
     x_train, y_train, x_test, y_test = get_data()
     batch_size = 10 # Change if you want
-    epochs = 4 # Change if you want
+    epochs = 10 # Change if you want
     for i in range(epochs):
         loss = []
         for j in range(0,x_train.shape[0], batch_size):
@@ -158,6 +206,9 @@ def test(model):
     y_score = model.forward(x_test)  
     print(y_test)
     print(y_score)
+    prediction =np.argmax(y_score, axis=1)
+    pred = np.transpose(np.array([prediction],dtype = np.float64))
+    print(pred)
     #threshold, upper, lower = 0.5, 1, 0
     #y_score = np.where(y_score>threshold, upper, lower)
     #PR curve, F1 and normalized ACA.
@@ -186,14 +237,14 @@ def test(model):
     #plt.show()
     #F1
     from sklearn.metrics import f1_score
-    f1 = f1_score(y_test, y_score, average='macro')  
+    f1 = f1_score(y_test, pred, average='macro')  
     print('F1 score: {0:0.2f}'.format(f1))
     #normalized ACA
     from sklearn.metrics import confusion_matrix
-    confusion_matrix(y_test, y_score)
+    confusion_matrix(y_test, pred)
     from sklearn.metrics import confusion_matrix
-    conf = confusion_matrix(y_test, y_score)
-    
+    conf = confusion_matrix(y_test, pred)
+    print('confmat',conf)
     cont1 = 0
     cont2 = 0
     for i in range(conf.shape[1]):
