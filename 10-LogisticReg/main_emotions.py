@@ -4,9 +4,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def softmax(X):
-    exps = np.exp(X)
-    return exps / np.sum(exps)
+def softmax(y_linear):
+    exps = [np.exp(i) for i in y_linear]
+    sum_of_exps = sum(exps)
+    softmax = [j/sum_of_exps for j in exps]
+    return softmax
 
 def get_data():
     # angry, disgust, fear, happy, sad, surprise, neutral
@@ -50,99 +52,56 @@ def get_data():
     print(x_test.shape[0], 'test samples')
 
     # plt.hist(y_train, max(y_train)+1); plt.show()
-
     return x_train, y_train, x_test, y_test
 
 class Model():
     def __init__(self):
-        params = 48*48 # image reshape
-        out1 = 1 
-        out2 = 1
-        out3 = 1
-        out4 = 1
-        out5 = 1
-        out6 = 1
-        out7 = 1
-        
-        self.lr = 0.003 # Change if you want
-        
-        self.W1 = np.random.randn(params, out1)
-        self.b1 = np.random.randn(out1)
-        
-        self.W2 = np.random.randn(params, out2)
-        self.b2 = np.random.randn(out2)
-        
-        self.W3 = np.random.randn(params, out3)
-        self.b3 = np.random.randn(out3)
-        
-        self.W4 = np.random.randn(params, out4)
-        self.b4 = np.random.randn(out4)
-        
-        self.W5 = np.random.randn(params, out5)
-        self.b5 = np.random.randn(out5)
-        
-        self.W6 = np.random.randn(params, out6)
-        self.b6 = np.random.randn(out6)
-        
-        self.W7 = np.random.randn(params, out7)
-        self.b7 = np.random.randn(out7)
-
+        self.lr = 0.00001 # Change if you want       
+        self.W = np.random.randn(48*48, 7)
+        self.b = np.random.randn(1,7)
 
     def forward(self, image):
         image = image.reshape(image.shape[0], -1)
-        out1 = np.dot(image, self.W1) + self.b1
-        out2 = np.dot(image, self.W2) + self.b2
-        out3 = np.dot(image, self.W3) + self.b3
-        out4 = np.dot(image, self.W4) + self.b4
-        out5 = np.dot(image, self.W5) + self.b5
-        out6 = np.dot(image, self.W6) + self.b6
-        out7 = np.dot(image, self.W7) + self.b7
-        
-        out = []
-        out.append(out1)
-        out.append(out2)
-        out.append(out3)
-        out.append(out4)
-        out.append(out5)
-        out.append(out6)
-        out.append(out7)
-        
-        prediction = out.where(out == np.amax(out))
-        return prediction[0][0]+1
-
-    #def compute_loss(self, pred, gt):
-        #J = (-1/pred.shape[0]) * np.sum(np.multiply(gt, np.log(sigmoid(pred))) + np.multiply((1-gt), np.log(1 - sigmoid(pred))))
-        #cost = -1/m * np.sum( np.multiply(np.log(A), Y) + np.multiply(np.log(1-A), (1-Y)))
-        #cost = -(1.0/m) * np.sum(Y*np.log(A) + (1-Y)*np.log(1-A))
-        #return J
+        dot = np.dot(image, self.W) + self.b
+        self.y_given_x = np.apply_along_axis(softmax,1,dot)
+        return self.y_given_x
     
     #def cross_entropy(X,y):
     def compute_loss(self, pred, gt):
-        # Log loss of the correct class of each of our samples
-        
-        log_likelihood = -np.multiply(np.log(softmax(pred)),gt)
-        # Compute the average loss
-        loss = np.sum(log_likelihood)/range(gt.shape[0])
+        nb_classes = 7
+        #one hot coding annotations
+        y_gt = gt.astype(np.int64)
+        targets_gt = np.array([[y_gt]]).reshape(-1)
+        one_hot_gt = np.eye(nb_classes)[targets_gt]
+        #Computing loss
+        log_likelihood = -np.multiply(np.log(pred),one_hot_gt)
+        loss = np.sum(log_likelihood)/gt.shape[0]
         return loss
 
     def compute_gradient(self, image, pred, gt):
         image = image.reshape(image.shape[0], -1)
-        W1_grad = np.dot(image.T, pred-gt)/image.shape[0]
-        self.W1 -= W1_grad*self.lr
-        b1_grad = np.sum(pred-gt)/image.shape[0]
-        self.b1 -= b1_grad*self.lr
-
+        nb_classes = 7
+        #one hot coding annotations
+        y_gt = gt.astype(np.int64)
+        targets_gt = np.array([[y_gt]]).reshape(-1)
+        one_hot_gt = np.eye(nb_classes)[targets_gt]
+        image = image.reshape(image.shape[0], -1)
+        W_grad = np.dot(image.T, pred-one_hot_gt)/image.shape[0]
+        self.W -= W_grad*self.lr
+        b_grad = np.sum(pred-gt)/image.shape[0]
+        self.b -= b_grad*self.lr
 
 def train(model):
     x_train, y_train, x_test, y_test = get_data()
     batch_size = 100 # Change if you want
-    epochs = 4 # Change if you want
+    epochs = 40000 # Change if you want
     for i in range(epochs):
         loss = []
         for j in range(0,x_train.shape[0], batch_size):
             _x_train = x_train[j:j+batch_size]
             _y_train = y_train[j:j+batch_size]
-            out = model.forward(_x_train,1)
+            out = model.forward(_x_train)
+            out = out.astype(np.float64)
             loss.append(model.compute_loss(out, _y_train))
             model.compute_gradient(_x_train, out, _y_train)
         out = model.forward(x_test)                
@@ -153,10 +112,6 @@ def train(model):
         aux.append(i)    
 
 def plot(loss,losses_test,epochs): # Add arguments
-    # CODE HERE
-    # Save a pdf figure with train and test losses
-    
-    #x = range(epochs)
     x = epochs
     
     plt.plot(x, loss, label='train')
@@ -167,49 +122,20 @@ def plot(loss,losses_test,epochs): # Add arguments
     plt.savefig('figure.pdf') 
 
 def test(model):
-    #_, _, x_test, y_test = get_data()
-    # YOU CODE HERE
-    # Show some qualitative results and the total accuracy for the whole test set
     _, _, x_test, y_test = get_data()
     y_score = model.forward(x_test)  
-    print(y_test)
-    print(y_score)
-    threshold, upper, lower = 0.5, 1, 0
-    y_score = np.where(y_score>threshold, upper, lower)
-    #PR curve, F1 and normalized ACA.
-    #PR
-    from sklearn.metrics import average_precision_score
-    average_precision = average_precision_score(y_test, y_score)  
-    print('Average precision-recall score: {0:0.2f}'.format(average_precision))                
-    #loss_test = model.compute_loss(out, y_test)         
-    from sklearn.metrics import precision_recall_curve
-    import matplotlib.pyplot as plt
-    from sklearn.utils.fixes import signature
-    
-    precision, recall, _ = precision_recall_curve(y_test, y_score)
-    step_kwargs = ({'step': 'post'}
-                   if 'step' in signature(plt.fill_between).parameters
-                   else {})
-    plt.step(recall, precision, color='b', alpha=0.2,
-             where='post')
-    plt.fill_between(recall, precision, alpha=0.2, color='b', **step_kwargs)
-    
-    plt.xlabel('Recall')
-    plt.ylabel('Precision')
-    plt.ylim([0.0, 1.05])
-    plt.xlim([0.0, 1.0])
-    plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(average_precision))
-    plt.show()
+    prediction =np.argmax(y_score, axis=1)
+    pred = np.transpose(np.array([prediction],dtype = np.float64))
     #F1
     from sklearn.metrics import f1_score
-    f1 = f1_score(y_test, y_score, average='macro')  
+    f1 = f1_score(y_test, pred, average='macro')  
     print('F1 score: {0:0.2f}'.format(f1))
     #normalized ACA
     from sklearn.metrics import confusion_matrix
-    confusion_matrix(y_test, y_score)
+    confusion_matrix(y_test, pred)
     from sklearn.metrics import confusion_matrix
-    conf = confusion_matrix(y_test, y_score)
-    
+    conf = confusion_matrix(y_test, pred)
+    print('confmat',conf)
     cont1 = 0
     cont2 = 0
     for i in range(conf.shape[1]):
@@ -218,7 +144,6 @@ def test(model):
     ACA = cont1/cont2    
     print ('ACA: {0:0.3f}'.format(ACA)) 
     
-
 if __name__ == '__main__':
     import os
  
@@ -257,3 +182,15 @@ if __name__ == '__main__':
     test(model)
     
     plot(losses,losses_test,aux)
+    
+# Sources:
+#http://deeplearning.net/tutorial/logreg.html   
+#https://gluon.mxnet.io/chapter02_supervised-learning/softmax-regression-scratch.html 
+#https://medium.com/data-science-bootcamp/understand-the-softmax-function-in-minutes-f3a59641e86d
+#http://neuralnetworksanddeeplearning.com/chap3.html
+#https://gombru.github.io/2018/05/23/cross_entropy_loss/
+#https://medium.com/tebs-lab/how-to-classify-mnist-digits-with-different-neural-network-architectures-39c75a0f03e3
+#https://towardsdatascience.com/understanding-binary-cross-entropy-log-loss-a-visual-explanation-a3ac6025181a
+#https://towardsdatascience.com/demystifying-cross-entropy-e80e3ad54a8
+#https://rstudio-pubs-static.s3.amazonaws.com/337306_79a7966fad184532ab3ad66b322fe96e.html
+#https://gombru.github.io/2018/05/23/cross_entropy_loss/
