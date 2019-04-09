@@ -120,7 +120,7 @@ def train(data_loader, model, epoch):
         data = data.to(device)
         print('data:',data)
         print('data dim:',data.shape)
-        target = target.type(torch.LongTensor).t().to(device)
+        target = torch.stack(target.type(torch.LongTensor)).to(device)
         print('target:',target)
         print('target dim:',target.shape)
         
