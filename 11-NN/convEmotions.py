@@ -120,7 +120,7 @@ def train(data_loader, model, epoch):
         data = data.to(device)
         print('data:',data)
         print('data dim:',data.shape)
-        target = target.type(torch.LongTensor).view(batch_size,-1).to(device)
+        target = target.type(torch.LongTensor).t().to(device)
         print('target:',target)
         print('target dim:',target.shape)
         
