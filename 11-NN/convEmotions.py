@@ -112,7 +112,7 @@ def get_true_test_data():
         images[i,:,:]= img
     return images
 
-def train(data_loader, model):
+def train(data_loader, model, epoch):
     model.train()
     loss_cum = []
     Acc = 0
@@ -131,7 +131,7 @@ def train(data_loader, model):
     
     print("Loss: %0.3f | Acc: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
 
-def test(data_loader, model):
+def test(data_loader, model, epoch):
     model.eval()
     loss_cum = []
     Acc = 0
