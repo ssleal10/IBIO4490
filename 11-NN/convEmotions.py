@@ -155,6 +155,8 @@ if __name__=='__main__':
     TEST=False
     x_train, y_train, x_test, y_test = get_data()
     
+    x_train= x_train[:, np.newaxis]
+    
     tensor_x_train = torch.stack([torch.Tensor(i) for i in x_train]) # transform to torch tensors
     tensor_y_train = torch.stack([torch.Tensor(i) for i in y_train])
     
@@ -173,7 +175,7 @@ if __name__=='__main__':
     print_network(model, 'Conv network + fc 2 layer non-linearity')    
     #Exploring model
     data, _ = next(iter(train_dataloader))
-    _ = model(data.to(device).requires_grad_(False), verbose=True)
+    #_ = model(data.to(device).requires_grad_(False), verbose=True)
 
     train(train_dataloader, model)
     if TEST: test(test_dataloader, model)
