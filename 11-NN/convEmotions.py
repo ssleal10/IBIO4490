@@ -78,13 +78,13 @@ def get_data():
 
     #------------------------------
     #data transformation for train and test sets
-    x_train = np.array(x_train, 'int64')
-    y_train = np.array(y_train, 'int64')
-    x_test = np.array(x_test, 'int64')
-    y_test = np.array(y_test, 'int64')
+    x_train = np.array(x_train, 'float64')
+    y_train = np.array(y_train, 'float64')
+    x_test = np.array(x_test, 'float64')
+    y_test = np.array(y_test, 'float64')
 
-    #x_train /= 255 #normalize inputs between [0, 1]
-    #x_test /= 255
+    x_train /= 255 #normalize inputs between [0, 1]
+    x_test /= 255
 
     x_train = x_train.reshape(x_train.shape[0], 48, 48)
     x_test = x_test.reshape(x_test.shape[0], 48, 48)
@@ -118,7 +118,7 @@ def train(data_loader, model, epoch):
     Acc = 0
     for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TRAIN] Epoch: {}".format(epoch)):
         data = data.to(device)
-        target = target.to(device)
+        target = target.type(torch.LongTensor).to(device)
 
         output = model(data)
         model.optimizer.zero_grad()
