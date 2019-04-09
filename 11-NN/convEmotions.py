@@ -118,8 +118,10 @@ def train(data_loader, model, epoch):
     Acc = 0
     for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TRAIN] Epoch: {}".format(epoch)):
         data = data.to(device)
+        print('data:',data)
         target = target.type(torch.LongTensor).to(device)
-
+        print('target:',target)
+        
         output = model(data)
         model.optimizer.zero_grad()
         loss = model.Loss(output,target)   
