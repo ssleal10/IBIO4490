@@ -22,7 +22,7 @@ class Net(nn.Module):
         self.conv1 = nn.Conv2d(1, 48, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
         self.conv2 = nn.Conv2d(48, 24, kernel_size=3)
         self.conv3 = nn.Conv2d(24, 24, kernel_size=3)
-        self.fc1 = nn.Linear(24, 24)   
+        self.fc1 = nn.Linear(24*4*4, 24)   
         self.fc2 = nn.Linear(24, 10)  
     
     def forward(self, x, verbose=False):
