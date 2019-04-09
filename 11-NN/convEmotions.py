@@ -153,7 +153,8 @@ if __name__=='__main__':
     TEST=True
     x_train, y_train, x_test, y_test = get_data()
     
-    x_train= x_train[:, np.newaxis]
+    x_train = x_train[:, np.newaxis]
+    x_test =  x_test[:, np.newaxis]
     
     tensor_x_train = torch.stack([torch.Tensor(i) for i in x_train]) # transform to torch tensors
     tensor_y_train = torch.stack([torch.Tensor(i) for i in y_train])
