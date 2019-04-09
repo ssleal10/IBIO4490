@@ -113,41 +113,39 @@ def get_true_test_data():
     return images
 
 def train(data_loader, model):
-    for epoch in range(epochs):
-        model.train()
-        loss_cum = []
-        Acc = 0
-        for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TRAIN] Epoch: {}".format(epoch)):
-            data = data.to(device)
-            target = target.to(device)
+    model.train()
+    loss_cum = []
+    Acc = 0
+    for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TRAIN] Epoch: {}".format(epoch)):
+        data = data.to(device)
+        target = target.to(device)
+
+        output = model(data)
+        model.optimizer.zero_grad()
+        loss = model.Loss(output,target)   
+        loss.backward()
+        model.optimizer.step()
+        loss_cum.append(loss.item())
+        _, arg_max_out = torch.max(output.data.cpu(), 1)
+        Acc += arg_max_out.long().eq(target.data.cpu().long()).sum()
     
-            output = model(data)
-            model.optimizer.zero_grad()
-            loss = model.Loss(output,target)   
-            loss.backward()
-            model.optimizer.step()
-            loss_cum.append(loss.item())
-            _, arg_max_out = torch.max(output.data.cpu(), 1)
-            Acc += arg_max_out.long().eq(target.data.cpu().long()).sum()
-        
-        print("Loss: %0.3f | Acc: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
+    print("Loss: %0.3f | Acc: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
 
 def test(data_loader, model):
-    for epoch in range(epochs):  
-        model.eval()
-        loss_cum = []
-        Acc = 0
-        for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
-            data = data.to(device).requires_grad_(False)
-            target = target.to(device).requires_grad_(False)
+    model.eval()
+    loss_cum = []
+    Acc = 0
+    for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
+        data = data.to(device).requires_grad_(False)
+        target = target.to(device).requires_grad_(False)
+
+        output = model(data)
+        loss = model.Loss(output,target)   
+        loss_cum.append(loss.item())
+        _, arg_max_out = torch.max(output.data.cpu(), 1)
+        Acc += arg_max_out.long().eq(target.data.cpu().long()).sum()
     
-            output = model(data)
-            loss = model.Loss(output,target)   
-            loss_cum.append(loss.item())
-            _, arg_max_out = torch.max(output.data.cpu(), 1)
-            Acc += arg_max_out.long().eq(target.data.cpu().long()).sum()
-        
-        print("Loss Test: %0.3f | Acc Test: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
+    print("Loss Test: %0.3f | Acc Test: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
     
 if __name__=='__main__':
     epochs=20
@@ -175,7 +173,7 @@ if __name__=='__main__':
     print_network(model, 'Conv network + fc 2 layer non-linearity')    
     #Exploring model
     data, _ = next(iter(train_dataloader))
-    #_ = model(data.to(device).requires_grad_(False), verbose=True)
-
-    train(train_dataloader, model)
-    if TEST: test(test_dataloader, model)
+    _ = model(data.to(device).requires_grad_(False), verbose=True)
+    for epoch in range(epochs): 
+        train(train_dataloader, model, epoch)
+        if TEST: test(test_dataloader, model, epoch)
