@@ -159,13 +159,13 @@ if __name__=='__main__':
     tensor_y_train = torch.stack([torch.Tensor(i) for i in y_train])
     
     train_dataset = utils.TensorDataset(tensor_x_train,tensor_y_train) # create your dataset
-    train_dataloader = utils.DataLoader(train_dataset) # create your dataloader
+    train_dataloader = utils.DataLoader(train_dataset, batch_size=batch_size, shuffle=True) # create your dataloader
     
     tensor_x_test = torch.stack([torch.Tensor(i) for i in x_test]) # transform to torch tensors
     tensor_y_test = torch.stack([torch.Tensor(i) for i in y_test])
     
     test_dataset = utils.TensorDataset(tensor_x_test,tensor_y_test) # create your dataset
-    test_dataloader = utils.DataLoader(test_dataset) # create your dataloader
+    test_dataloader = utils.DataLoader(test_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
 
     model = Net()
     model.to(device)
