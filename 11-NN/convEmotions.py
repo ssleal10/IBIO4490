@@ -4,6 +4,7 @@ import torch.nn.functional as F
 #from torchvision import datasets, transforms
 import numpy as np
 import tqdm
+import torch.utils.data as utils
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print('device:',device)
 def print_network(model, name):
@@ -111,17 +112,15 @@ def get_true_test_data():
         images[i,:,:]= img
     return images
 
-def train(x_train, y_train, model):
+def train(data_loader, model):
     for epoch in range(epochs):
         model.train()
         loss_cum = []
         Acc = 0
-        for batch_idx in tqdm.tqdm(range(0, len(x_train), batch_size), desc="[TRAIN] Epoch: {}".format(epoch)):
-            x_batch = x_train[batch_idx:batch_idx+batch_size]
-            y_batch = y_train[batch_idx:batch_idx+batch_size]
-            data = torch.from_numpy(x_batch).float().to(device)
-            target = torch.from_numpy(y_batch).float().to(device)
-            
+        for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TRAIN] Epoch: {}".format(epoch)):
+            data = data.to(device)
+            target = target.to(device)
+    
             output = model(data)
             model.optimizer.zero_grad()
             loss = model.Loss(output,target)   
@@ -131,18 +130,16 @@ def train(x_train, y_train, model):
             _, arg_max_out = torch.max(output.data.cpu(), 1)
             Acc += arg_max_out.long().eq(target.data.cpu().long()).sum()
         
-        print("Loss: %0.3f | Acc: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(x_train)))
+        print("Loss: %0.3f | Acc: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
 
-def test(x_test, y_test, model):
+def test(data_loader, model):
     for epoch in range(epochs):  
         model.eval()
         loss_cum = []
         Acc = 0
-        for batch_idx in tqdm.tqdm(range(0, len(x_test), batch_size), desc="[TEST] Epoch: {}".format(epoch)):
-            x_batch = x_test[batch_idx:batch_idx+batch_size]
-            y_batch = y_test[batch_idx:batch_idx+batch_size]
-            data = torch.from_numpy(x_batch).float().to(device).requires_grad_(False)
-            target = torch.from_numpy(y_batch).float().to(device).requires_grad_(False)
+        for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
+            data = data.to(device).requires_grad_(False)
+            target = target.to(device).requires_grad_(False)
     
             output = model(data)
             loss = model.Loss(output,target)   
@@ -150,17 +147,33 @@ def test(x_test, y_test, model):
             _, arg_max_out = torch.max(output.data.cpu(), 1)
             Acc += arg_max_out.long().eq(target.data.cpu().long()).sum()
         
-        print("Loss Test: %0.3f | Acc Test: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(x_test)))
+        print("Loss Test: %0.3f | Acc Test: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
     
 if __name__=='__main__':
     epochs=20
     batch_size=1000
     TEST=False
     x_train, y_train, x_test, y_test = get_data()
+    
+    tensor_x_train = torch.stack([torch.Tensor(i) for i in x_train]) # transform to torch tensors
+    tensor_y_train = torch.stack([torch.Tensor(i) for i in y_train])
+    
+    train_dataset = utils.TensorDataset(tensor_x_train,tensor_y_train) # create your dataset
+    train_dataloader = utils.DataLoader(train_dataset) # create your dataloader
+    
+    tensor_x_test = torch.stack([torch.Tensor(i) for i in x_test]) # transform to torch tensors
+    tensor_y_test = torch.stack([torch.Tensor(i) for i in y_test])
+    
+    test_dataset = utils.TensorDataset(tensor_x_test,tensor_y_test) # create your dataset
+    test_dataloader = utils.DataLoader(test_dataset) # create your dataloader
 
     model = Net()
     model.to(device)
     model.training_params()
     print_network(model, 'Conv network + fc 2 layer non-linearity')    
-    train(x_train, y_train, model)
-    if TEST: test(x_test, y_test, model)
+    #Exploring model
+    data, _ = next(iter(train_dataloader))
+    _ = model(data.to(device).requires_grad_(False), verbose=True)
+
+    train(train_dataloader, model)
+    if TEST: test(test_dataloader, model)
