@@ -48,7 +48,7 @@ class Net(nn.Module):
         return x
 
     def training_params(self):
-        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0)
+        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.003, momentum=0.9, weight_decay=0.0)
         self.Loss = nn.CrossEntropyLoss()
         
 #def get_data(batch_size):
@@ -137,7 +137,7 @@ def test(data_loader, model, epoch):
     Acc = 0
     for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
         data = data.to(device).requires_grad_(False)
-        target = target.to(device).requires_grad_(False)
+        target = target.type(torch.LongTensor).squeeze(1).to(device).requires_grad_(False)
 
         output = model(data)
         loss = model.Loss(output,target)   
@@ -150,7 +150,7 @@ def test(data_loader, model, epoch):
 if __name__=='__main__':
     epochs=20
     batch_size=1000
-    TEST=False
+    TEST=True
     x_train, y_train, x_test, y_test = get_data()
     
     x_train= x_train[:, np.newaxis]
