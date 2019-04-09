@@ -68,7 +68,7 @@ def get_data():
     for i in range(1,num_of_instances):
         emotion, img, usage = lines[i].split(",")
         pixels = np.array(img.split(" "), 'float32')
-        emotion = 1 if int(emotion)==3 else 0 # Only for happiness
+        #emotion = 1 if int(emotion)==3 else 0 # Only for happiness
         if 'Training' in usage:
             y_train.append(emotion)
             x_train.append(pixels)
