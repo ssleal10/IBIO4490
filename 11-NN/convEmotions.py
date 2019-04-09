@@ -48,7 +48,7 @@ class Net(nn.Module):
         return x
 
     def training_params(self):
-        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.003, momentum=0.9, weight_decay=0.0)
+        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.00001, momentum=0.9, weight_decay=0.0)
         self.Loss = nn.CrossEntropyLoss()
         
 #def get_data(batch_size):
