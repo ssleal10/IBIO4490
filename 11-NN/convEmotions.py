@@ -120,7 +120,7 @@ def get_data():
     y_test = y_test.reshape(y_test.shape[0], 1)
 
     print(x_train.shape[0], 'train samples')
-    print(x_test.shape[0], 'test samples')
+    print(x_test.shape[0], 'validation samples')
     #test will be used fot validation
     return x_train, y_train, x_test, y_test
 
@@ -158,7 +158,7 @@ def get_test_data():
         face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
         faces = face_cascade.detectMultiScale(img,1.1,5,0)
         crop = img[faces[0][1]:faces[0][1]+faces[0][3],faces[0][0]:faces[0][0]+faces[0][2]]
-        img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
+        img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC) 
         images[i,:,:]= img
     return images
 
@@ -212,8 +212,8 @@ def test(data_loader, model, epoch):
 
 if __name__=='__main__':
     epochs=40
-    batch_size=50
-    TEST=True
+    batch_size=100
+    TEST=False
     x_train, y_train, x_val, y_val = get_data()
     x_test = get_test_data()
     
