@@ -20,10 +20,10 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         #layer with 64 2d convolutional filter of size 3x3
-        self.conv1 = nn.Conv2d(1, 520, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
-        self.conv2 = nn.Conv2d(520, 390, kernel_size=3)
-        self.conv3 = nn.Conv2d(390, 260, kernel_size=3)
-        self.fc1 = nn.Linear(4160, 520)   
+        self.conv1 = nn.Conv2d(1, 260, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
+        self.conv2 = nn.Conv2d(260, 195, kernel_size=3)
+        self.conv3 = nn.Conv2d(130, 65, kernel_size=3)
+        self.fc1 = nn.Linear(1040, 520)   
         self.fc2 = nn.Linear(520, 10)  
     
     def forward(self, x, verbose=False):
@@ -40,7 +40,7 @@ class Net(nn.Module):
         x = F.dropout(x, 0.50, training=self.training)
         if verbose: print(x.size())
         #ipdb.set_trace()
-        x = x.view(-1, 4160)
+        x = x.view(-1, 1040)
         if verbose: print(x.size())
         x = F.relu(self.fc1(x))
         if verbose: print(x.size())
@@ -198,11 +198,11 @@ def val(data_loader, model, epoch):
     print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
  
 def test(data_loader, model, epoch):
-    model.eval()    
+    model.eval()  
+    open("convEmotions_Results.txt","w+")
     for batch_idx, (data) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
         data = data.to(device).requires_grad_(False)
         output = model(data)
-        open("convEmotions_Results.txt","w+")
         with open('convEmotions_Results.txt', 'a+') as f:
             for item in output:
                 filename = os.listdir('Emotions_test')[item]
