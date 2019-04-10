@@ -5,8 +5,9 @@ import torch.nn.functional as F
 import numpy as np
 import tqdm
 import torch.utils.data as utils
+import os
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print('device:',device)
+print('Device:',device)
 def print_network(model, name):
     num_params=0
     for p in model.parameters():
@@ -19,9 +20,9 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         #layer with 64 2d convolutional filter of size 3x3
-        self.conv1 = nn.Conv2d(1, 1040, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
-        self.conv2 = nn.Conv2d(1040, 520, kernel_size=3)
-        self.conv3 = nn.Conv2d(520, 260, kernel_size=3)
+        self.conv1 = nn.Conv2d(1, 520, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
+        self.conv2 = nn.Conv2d(520, 390, kernel_size=3)
+        self.conv3 = nn.Conv2d(390, 260, kernel_size=3)
         self.fc1 = nn.Linear(4160, 520)   
         self.fc2 = nn.Linear(520, 10)  
     
@@ -54,6 +55,33 @@ class Net(nn.Module):
 #def get_data(batch_size):
     #transform_train = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
 def get_data():
+    cwd = os.getcwd()
+    if os.path.isfile(cwd+'/'+'fer2013.zip') == False:
+        url = "https://www.dropbox.com/s/ngq9ntcb8p3m8y3/fer2013.zip?dl=1"
+        import zipfile
+        print('Downloading the database...')
+        import urllib.request
+        u = urllib.request.urlopen(url)
+        data = u.read()
+        u.close()
+        with open(cwd+'/'+'fer2013.zip','wb') as f :
+            f.write(data)
+        print('Database downloaded.')
+        f.close()
+        
+        #Unzip
+        print('Unzipping the database...')
+        zip_Archivo = zipfile.ZipFile(cwd +'/'+'fer2013.zip', 'r')
+        zip_Archivo.extractall(cwd)
+        zip_Archivo.close()
+        
+        #untar
+        import tarfile
+        tar = tarfile.open('fer2013.tar.gz', "r:gz")
+        tar.extractall()
+        tar.close()
+        print('Unzipping done.') 
+        
     # angry, disgust, fear, happy, sad, surprise, neutral
     with open("fer2013.csv") as f:
         content = f.readlines()
@@ -99,8 +127,30 @@ def get_data():
 def get_test_data():
     import cv2
     import os
-    images = np.zeros((1610,48,48))
     from tqdm import tqdm
+
+    cwd = os.getcwd()
+    if os.path.isfile(cwd+'/'+'Emotions_test.zip') == False:
+        url = "http://bcv001.uniandes.edu.co/Emotions_test.zip"
+        import zipfile
+        print('Downloading the test database...')
+        import urllib.request
+        u = urllib.request.urlopen(url)
+        data = u.read()
+        u.close()
+        with open(cwd+'/'+'Emotions_test.zip','wb') as f :
+            f.write(data)
+        print('Test database downloaded.')
+        f.close()
+        
+        #Unzip
+        print('Unzipping the database...')
+        zip_Archivo = zipfile.ZipFile(cwd +'/'+'Emotions_test.zip', 'r')
+        zip_Archivo.extractall(cwd)
+        zip_Archivo.close()
+        print('Unzipping done.')
+        
+    images = np.zeros((1610,48,48))
     for i in tqdm(range(1610), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
         filename = os.listdir('Emotions_test')[i]
         img = cv2.imread(os.path.join('Emotions_test',filename))
@@ -146,15 +196,30 @@ def val(data_loader, model, epoch):
         Acc += arg_max_out.long().eq(target.data.cpu().long()).sum()
     
     print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
-    
+ 
+def test(data_loader, model, epoch):
+    model.eval()    
+    for batch_idx, (data) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
+        data = data.to(device).requires_grad_(False)
+        output = model(data)
+        open("convEmotions_Results.txt","w+")
+        with open('convEmotions_Results.txt', 'a+') as f:
+            for item in output:
+                filename = os.listdir('Emotions_test')[item]
+                f.write("%s\n" % filename,',',item)
+                f.close
+        print("TEST Results printed.")
+
 if __name__=='__main__':
     epochs=40
     batch_size=50
-    VAL=True
+    TEST=True
     x_train, y_train, x_val, y_val = get_data()
+    x_test = get_test_data()
     
     x_train = x_train[:, np.newaxis]
     x_val =  x_val[:, np.newaxis]
+    x_test = x_test[:,np.newaxis]
     
     tensor_x_train = torch.stack([torch.Tensor(i) for i in x_train]) # transform to torch tensors
     tensor_y_train = torch.stack([torch.Tensor(i) for i in y_train])
@@ -168,6 +233,10 @@ if __name__=='__main__':
     val_dataset = utils.TensorDataset(tensor_x_val,tensor_y_val) # create your dataset
     val_dataloader = utils.DataLoader(val_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
 
+    tensor_x_test = torch.stack([torch.Tensor(i) for i in x_test])
+    test_dataset = utils.TensorDataset(tensor_x_test) # create your dataset
+    test_dataloader = utils.DataLoader(test_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
+    
     model = Net()
     model.to(device)
     model.training_params()
@@ -177,4 +246,6 @@ if __name__=='__main__':
     _ = model(data.to(device).requires_grad_(False), verbose=True)
     for epoch in range(epochs): 
         train(train_dataloader, model, epoch)
-        if VAL: val(val_dataloader, model, epoch)
+        val(val_dataloader, model, epoch)
+
+    if TEST: TEST(test_dataloader, model, epoch)
