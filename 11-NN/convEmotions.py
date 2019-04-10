@@ -213,13 +213,13 @@ def test(data_loader, model, epoch):
 if __name__=='__main__':
     epochs=40
     batch_size=100
-    TEST=False
+    #TEST=False
     x_train, y_train, x_val, y_val = get_data()
-    x_test = get_test_data()
+    #x_test = get_test_data()
     
     x_train = x_train[:, np.newaxis]
     x_val =  x_val[:, np.newaxis]
-    x_test = x_test[:,np.newaxis]
+    #x_test = x_test[:,np.newaxis]
     
     tensor_x_train = torch.stack([torch.Tensor(i) for i in x_train]) # transform to torch tensors
     tensor_y_train = torch.stack([torch.Tensor(i) for i in y_train])
@@ -233,9 +233,9 @@ if __name__=='__main__':
     val_dataset = utils.TensorDataset(tensor_x_val,tensor_y_val) # create your dataset
     val_dataloader = utils.DataLoader(val_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
 
-    tensor_x_test = torch.stack([torch.Tensor(i) for i in x_test])
-    test_dataset = utils.TensorDataset(tensor_x_test) # create your dataset
-    test_dataloader = utils.DataLoader(test_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
+    #tensor_x_test = torch.stack([torch.Tensor(i) for i in x_test])
+    #est_dataset = utils.TensorDataset(tensor_x_test) # create your dataset
+    #test_dataloader = utils.DataLoader(test_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
     
     model = Net()
     model.to(device)
@@ -248,4 +248,4 @@ if __name__=='__main__':
         train(train_dataloader, model, epoch)
         val(val_dataloader, model, epoch)
 
-    if TEST: TEST(test_dataloader, model, epoch)
+    #if TEST: TEST(test_dataloader, model, epoch)
