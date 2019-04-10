@@ -23,7 +23,7 @@ class Net(nn.Module):
         self.conv1 = nn.Conv2d(1, 260, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
         self.conv2 = nn.Conv2d(260, 195, kernel_size=3)
         self.conv3 = nn.Conv2d(130, 65, kernel_size=3)
-        self.fc1 = nn.Linear(1040, 520)   
+        self.fc1 = nn.Linear(6500, 520)   
         self.fc2 = nn.Linear(520, 10)  
     
     def forward(self, x, verbose=False):
@@ -40,7 +40,7 @@ class Net(nn.Module):
         x = F.dropout(x, 0.50, training=self.training)
         if verbose: print(x.size())
         #ipdb.set_trace()
-        x = x.view(-1, 1040)
+        x = x.view(-1, 6500)
         if verbose: print(x.size())
         x = F.relu(self.fc1(x))
         if verbose: print(x.size())
