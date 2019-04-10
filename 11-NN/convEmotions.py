@@ -19,11 +19,11 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         #layer with 64 2d convolutional filter of size 3x3
-        self.conv1 = nn.Conv2d(1, 64, kernel_size=4) #Channels input: 1, c output: 48, filter of size 3
-        self.conv2 = nn.Conv2d(64, 32, kernel_size=4)
-        self.conv3 = nn.Conv2d(32, 16, kernel_size=4)
-        self.fc1 = nn.Linear(144, 72)   
-        self.fc2 = nn.Linear(72, 10)  
+        self.conv1 = nn.Conv2d(1, 1040, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
+        self.conv2 = nn.Conv2d(1040, 520, kernel_size=3)
+        self.conv3 = nn.Conv2d(520, 260, kernel_size=3)
+        self.fc1 = nn.Linear(4160, 520)   
+        self.fc2 = nn.Linear(520, 10)  
     
     def forward(self, x, verbose=False):
         if verbose: "Output Layer by layer"
@@ -32,14 +32,14 @@ class Net(nn.Module):
         if verbose: print(x.size())
         x = F.max_pool2d(F.relu(self.conv2(x)), 2)
         if verbose: print(x.size())
-        x = F.dropout(x, 0.25, training=self.training)#Try to control overfit on the network, by randomly excluding 25% of neurons on the last #layer during each iteration
+        x = F.dropout(x, 0.50, training=self.training)#Try to control overfit on the network, by randomly excluding 25% of neurons on the last #layer during each iteration
         if verbose: print(x.size())
         x = F.max_pool2d(F.relu(self.conv3(x)), 2)
         if verbose: print(x.size())
-        x = F.dropout(x, 0.25, training=self.training)
+        x = F.dropout(x, 0.50, training=self.training)
         if verbose: print(x.size())
         #ipdb.set_trace()
-        x = x.view(-1, 144)
+        x = x.view(-1, 4160)
         if verbose: print(x.size())
         x = F.relu(self.fc1(x))
         if verbose: print(x.size())
@@ -48,7 +48,7 @@ class Net(nn.Module):
         return x
 
     def training_params(self):
-        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.00001, momentum=0.9, weight_decay=0.0)
+        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0)
         self.Loss = nn.CrossEntropyLoss()
         
 #def get_data(batch_size):
@@ -93,10 +93,10 @@ def get_data():
 
     print(x_train.shape[0], 'train samples')
     print(x_test.shape[0], 'test samples')
-    
+    #test will be used fot validation
     return x_train, y_train, x_test, y_test
 
-def get_true_test_data():
+def get_test_data():
     import cv2
     import os
     images = np.zeros((1610,48,48))
@@ -131,11 +131,11 @@ def train(data_loader, model, epoch):
     
     print("Loss: %0.3f | Acc: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
 
-def test(data_loader, model, epoch):
+def val(data_loader, model, epoch):
     model.eval()
     loss_cum = []
     Acc = 0
-    for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
+    for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[VAL] Epoch: {}".format(epoch)):
         data = data.to(device).requires_grad_(False)
         target = target.type(torch.LongTensor).squeeze(1).to(device).requires_grad_(False)
 
@@ -145,16 +145,16 @@ def test(data_loader, model, epoch):
         _, arg_max_out = torch.max(output.data.cpu(), 1)
         Acc += arg_max_out.long().eq(target.data.cpu().long()).sum()
     
-    print("Loss Test: %0.3f | Acc Test: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
+    print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
     
 if __name__=='__main__':
-    epochs=20
-    batch_size=1000
-    TEST=True
-    x_train, y_train, x_test, y_test = get_data()
+    epochs=40
+    batch_size=50
+    VAL=True
+    x_train, y_train, x_val, y_val = get_data()
     
     x_train = x_train[:, np.newaxis]
-    x_test =  x_test[:, np.newaxis]
+    x_val =  x_val[:, np.newaxis]
     
     tensor_x_train = torch.stack([torch.Tensor(i) for i in x_train]) # transform to torch tensors
     tensor_y_train = torch.stack([torch.Tensor(i) for i in y_train])
@@ -162,11 +162,11 @@ if __name__=='__main__':
     train_dataset = utils.TensorDataset(tensor_x_train,tensor_y_train) # create your dataset
     train_dataloader = utils.DataLoader(train_dataset, batch_size=batch_size, shuffle=True) # create your dataloader
     
-    tensor_x_test = torch.stack([torch.Tensor(i) for i in x_test]) # transform to torch tensors
-    tensor_y_test = torch.stack([torch.Tensor(i) for i in y_test])
+    tensor_x_val = torch.stack([torch.Tensor(i) for i in x_val]) # transform to torch tensors
+    tensor_y_val = torch.stack([torch.Tensor(i) for i in y_val])
     
-    test_dataset = utils.TensorDataset(tensor_x_test,tensor_y_test) # create your dataset
-    test_dataloader = utils.DataLoader(test_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
+    val_dataset = utils.TensorDataset(tensor_x_val,tensor_y_val) # create your dataset
+    val_dataloader = utils.DataLoader(val_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
 
     model = Net()
     model.to(device)
@@ -177,4 +177,4 @@ if __name__=='__main__':
     _ = model(data.to(device).requires_grad_(False), verbose=True)
     for epoch in range(epochs): 
         train(train_dataloader, model, epoch)
-        if TEST: test(test_dataloader, model, epoch)
+        if VAL: val(val_dataloader, model, epoch)
