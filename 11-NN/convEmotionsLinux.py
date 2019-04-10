@@ -131,7 +131,7 @@ def get_test_data():
     from tqdm import tqdm
 
     cwd = os.getcwd()
-    if os.path.isfile(cwd+'/'+'fer2013.zip') == False:
+    if os.path.isfile(cwd+'/'+'Emotions_test.zip') == False:
         url = "http://bcv001.uniandes.edu.co/Emotions_test.zip"
         import zipfile
         print('Downloading the test database...')
@@ -217,7 +217,7 @@ def test(data_loader, model, epoch):
 if __name__=='__main__':
     epochs=40
     batch_size=50
-    TEST=True
+    TEST=False
     x_train, y_train, x_val, y_val = get_data()
     
     x_train = x_train[:, np.newaxis]
