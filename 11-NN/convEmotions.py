@@ -20,11 +20,11 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         #layer with 64 2d convolutional filter of size 3x3
-        self.conv1 = nn.Conv2d(1, 65, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
-        self.conv2 = nn.Conv2d(65, 130, kernel_size=3)
-        self.conv3 = nn.Conv2d(130, 260, kernel_size=3)
-        self.fc1 = nn.Linear(4160, 1040)   
-        self.fc2 = nn.Linear(1040, 10)  
+        self.conv1 = nn.Conv2d(1, 88, kernel_size=5) #Channels input: 1, c output: 48, filter of size 3
+        self.conv2 = nn.Conv2d(88, 44, kernel_size=5)
+        self.conv3 = nn.Conv2d(22, 11, kernel_size=5)
+        self.fc1 = nn.Linear(176, 44)   
+        self.fc2 = nn.Linear(44, 10)  
     
     def forward(self, x, verbose=False):
         if verbose: "Output Layer by layer"
@@ -40,7 +40,7 @@ class Net(nn.Module):
         x = F.dropout(x, 0.50, training=self.training)
         if verbose: print(x.size())
         #ipdb.set_trace()
-        x = x.view(-1, 4160)
+        x = x.view(-1, 176)
         if verbose: print(x.size())
         x = F.relu(self.fc1(x))
         if verbose: print(x.size())
@@ -49,7 +49,7 @@ class Net(nn.Module):
         return x
 
     def training_params(self):
-        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0)
+        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.01, momentum=0.9, weight_decay=0.005)
         self.Loss = nn.CrossEntropyLoss()
         
 #def get_data(batch_size):
