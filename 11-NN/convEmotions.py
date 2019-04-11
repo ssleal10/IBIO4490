@@ -21,8 +21,8 @@ class Net(nn.Module):
         super(Net, self).__init__()
         #layer with 64 2d convolutional filter of size 3x3
         self.conv1 = nn.Conv2d(1, 240, kernel_size=5) #Channels input: 1, c output: 48, filter of size 3
-        self.conv2 = nn.Conv2d(240, 240, kernel_size=5)
-        self.conv3 = nn.Conv2d(240, 240, kernel_size=5)
+        self.conv2 = nn.Conv2d(240, 120, kernel_size=5)
+        self.conv3 = nn.Conv2d(120, 60, kernel_size=5)
         self.fc1 = nn.Linear(960, 480)   
         self.fc2 = nn.Linear(480, 10)  
     
