@@ -213,7 +213,7 @@ def test(data_loader, model, epoch):
 if __name__=='__main__':
     epochs=40
     batch_size=50
-    TEST=Flase
+    TEST=False
     x_train, y_train, x_val, y_val = get_data()
     
     x_train = x_train[:, np.newaxis]
