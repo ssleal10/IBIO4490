@@ -23,8 +23,8 @@ class Net(nn.Module):
         self.conv1 = nn.Conv2d(1, 240, kernel_size=5) #Channels input: 1, c output: 48, filter of size 3
         self.conv2 = nn.Conv2d(240, 120, kernel_size=5)
         self.conv3 = nn.Conv2d(120, 60, kernel_size=5)
-        self.fc1 = nn.Linear(960, 480)   
-        self.fc2 = nn.Linear(480, 10)  
+        self.fc1 = nn.Linear(240, 120)   
+        self.fc2 = nn.Linear(240, 10)  
     
     def forward(self, x, verbose=False):
         if verbose: "Output Layer by layer"
