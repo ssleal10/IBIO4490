@@ -22,9 +22,9 @@ class Net(nn.Module):
         #layer with 64 2d convolutional filter of size 3x3
         self.conv1 = nn.Conv2d(1, 88, kernel_size=5) #Channels input: 1, c output: 48, filter of size 3
         self.conv2 = nn.Conv2d(88, 44, kernel_size=5)
-        self.conv3 = nn.Conv2d(22, 11, kernel_size=5)
-        self.fc1 = nn.Linear(891, 297)   
-        self.fc2 = nn.Linear(297, 10)  
+        self.conv3 = nn.Conv2d(44, 22, kernel_size=5)
+        self.fc1 = nn.Linear(1782, 891)   
+        self.fc2 = nn.Linear(891, 10)  
     
     def forward(self, x, verbose=False):
         if verbose: "Output Layer by layer"
@@ -40,7 +40,7 @@ class Net(nn.Module):
         x = F.dropout(x, 0.50, training=self.training)
         if verbose: print(x.size())
         #ipdb.set_trace()
-        x = x.view(-1, 891)
+        x = x.view(-1, 1782)
         if verbose: print(x.size())
         x = F.relu(self.fc1(x))
         if verbose: print(x.size())
