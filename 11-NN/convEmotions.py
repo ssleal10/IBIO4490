@@ -29,7 +29,7 @@ class Net(nn.Module):
     def forward(self, x, verbose=False):
         if verbose: "Output Layer by layer"
         if verbose: print(x.size())
-        x = F.max_pool2d(F.relu(self.conv1(x),2) #Perform a Maximum pooling operation over the nonlinear responses of the convolutional layer
+        x = F.max_pool2d(F.relu(self.conv1(x),2)) #Perform a Maximum pooling operation over the nonlinear responses of the convolutional layer
         if verbose: print(x.size())
         x = F.relu(self.conv2(x))
         if verbose: print(x.size())
