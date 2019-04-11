@@ -29,7 +29,7 @@ class Net(nn.Module):
     def forward(self, x, verbose=False):
         if verbose: "Output Layer by layer"
         if verbose: print(x.size())
-        x = F.max_pool2dF.relu(self.conv1(x)),2) #Perform a Maximum pooling operation over the nonlinear responses of the convolutional layer
+        x = F.max_pool2d(F.relu(self.conv1(x)),2) #Perform a Maximum pooling operation over the nonlinear responses of the convolutional layer
         if verbose: print(x.size())
         x = F.dropout(x, 0.50, training=self.training)#Try to control overfit on the network, by randomly excluding 25% of neurons on the last #layer during each iteration
         if verbose: print(x.size())
