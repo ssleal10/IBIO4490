@@ -20,11 +20,11 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         #layer with 64 2d convolutional filter of size 3x3
-        self.conv1 = nn.Conv2d(1, 260, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
-        self.conv2 = nn.Conv2d(260, 195, kernel_size=3)
-        self.conv3 = nn.Conv2d(195, 65, kernel_size=3)
-        self.fc1 = nn.Linear(1040, 520)   
-        self.fc2 = nn.Linear(520, 10)  
+        self.conv1 = nn.Conv2d(1, 65, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
+        self.conv2 = nn.Conv2d(65, 130, kernel_size=3)
+        self.conv3 = nn.Conv2d(130, 260, kernel_size=3)
+        self.fc1 = nn.Linear(4160, 1040)   
+        self.fc2 = nn.Linear(1040, 10)  
     
     def forward(self, x, verbose=False):
         if verbose: "Output Layer by layer"
@@ -40,7 +40,7 @@ class Net(nn.Module):
         x = F.dropout(x, 0.50, training=self.training)
         if verbose: print(x.size())
         #ipdb.set_trace()
-        x = x.view(-1, 1040)
+        x = x.view(-1, 4160)
         if verbose: print(x.size())
         x = F.relu(self.fc1(x))
         if verbose: print(x.size())
@@ -213,7 +213,7 @@ def test(data_loader, model, epoch):
 if __name__=='__main__':
     epochs=40
     batch_size=100
-    TEST=False
+    TEST=True
     x_train, y_train, x_val, y_val = get_data()
     x_test = get_test_data()
     
