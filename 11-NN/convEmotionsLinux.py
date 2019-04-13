@@ -193,8 +193,8 @@ def get_test_data():
         #face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
         #faces = face_cascade.detectMultiScale(img,1.1,5,0)
         
-        crop = gray[face_locations[0][1]:face_locations[0][1]+face_locations[0][3],face_locations[0][0]:
-            face_locations[0][0]+face_locations[0][2]]
+        crop = img[face_locations[0][0]:face_locations[0][0]+face_locations[0][2],face_locations[0][3]:
+            face_locations[0][3]+face_locations[0][1]]
         import matplotlib.pyplot as plt 
         plt.imshow(crop)
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
