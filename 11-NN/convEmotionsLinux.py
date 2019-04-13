@@ -182,7 +182,7 @@ def get_test_data():
         
     images = np.zeros((1610,48,48))
     import face_recognition
-    for i in tqdm(range(1), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
+    for i in tqdm.tqdm(range(1), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
         filename = os.listdir('Emotions_test')[i]
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
         face_locations = face_recognition.face_locations(image)
