@@ -187,13 +187,13 @@ def get_test_data():
         filename = os.listdir('Emotions_test')[i]
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
         face_locations = face_recognition.face_locations(image)
-        print('faceloc',face_locations)
+        
         #img = cv2.imread(os.path.join('Emotions_test',filename))
-        img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         #face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
         #faces = face_cascade.detectMultiScale(img,1.1,5,0)
         
-        crop = img[face_locations[0][1]:face_locations[0][1]+face_locations[0][3],face_locations[0][0]:
+        crop = gray[face_locations[0][1]:face_locations[0][1]+face_locations[0][3],face_locations[0][0]:
             face_locations[0][0]+face_locations[0][2]]
         import matplotlib.pyplot as plt 
         plt.imshow(crop)
