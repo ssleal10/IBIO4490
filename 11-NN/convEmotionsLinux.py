@@ -278,6 +278,7 @@ if __name__=='__main__':
 
     if TEST: 
         x_test = get_test_data()
+        print('xtest',x_test)
         y_test = np.zeros((x_test.shape[0]))
         x_test = x_test[:,np.newaxis]
         y_test = y_test[:,np.newaxis]
