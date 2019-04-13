@@ -194,6 +194,9 @@ def get_test_data():
         #faces = face_cascade.detectMultiScale(img,1.1,5,0)   
         crop = gray[face_locations[0][0]:face_locations[0][0]+face_locations[0][2],face_locations[0][3]:
             face_locations[0][3]+face_locations[0][1]]
+        import matplotlib.pyplot as plt
+        plt.imshow(crop)
+        plt.show()
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
         images[i,:,:]= img
 def train(data_loader, model, epoch):
