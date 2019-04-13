@@ -197,6 +197,7 @@ def get_test_data():
         plt.show()
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
         images[i]= img
+        return images
 def train(data_loader, model, epoch):
     model.train()
     loss_cum = []
