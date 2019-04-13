@@ -188,10 +188,11 @@ def get_test_data():
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
         face_locations = face_recognition.face_locations(image)
         #img = cv2.imread(os.path.join('Emotions_test',filename))
-        #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         #face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
         #faces = face_cascade.detectMultiScale(img,1.1,5,0)
-        crop = image[face_locations[0][1]:face_locations[0][1]+face_locations[0][3],face_locations[0][0]:
+        
+        crop = img[face_locations[0][1]:face_locations[0][1]+face_locations[0][3],face_locations[0][0]:
             face_locations[0][0]+face_locations[0][2]]
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
         images[i,:,:]= img
@@ -275,9 +276,13 @@ if __name__=='__main__':
 
     if TEST: 
         x_test = get_test_data()
+        y_test = np.zeros((x_test.shape[0]))
         x_test = x_test[:,np.newaxis]
+        y_test = y_test[:,np.newaxis]
         tensor_x_test = torch.stack([torch.Tensor(i) for i in x_test])
-        test_dataset = utils.TensorDataset(tensor_x_test) # create your dataset
-        test_dataloader = utils.DataLoader(test_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
+        tensor_y_test = torch.stack([torch.Tensor(i) for i in y_test])
+        test_dataset = utils.TensorDataset(tensor_x_test,tensor_y_test) # create your dataset
+        test_dataloader = utils.DataLoader(test_dataset, batch_size=1610, shuffle=False) # create your dataloader
         test(test_dataloader, model, epoch)
         print("TEST Results printed.")
+
