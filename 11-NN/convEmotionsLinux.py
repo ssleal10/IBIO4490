@@ -6,8 +6,9 @@ import numpy as np
 import tqdm
 import torch.utils.data as utils
 import os
+import torchvision
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print('device:',device)
+print('Device:',device)
 def print_network(model, name):
     num_params=0
     for p in model.parameters():
@@ -20,36 +21,38 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         #layer with 64 2d convolutional filter of size 3x3
-        self.conv1 = nn.Conv2d(1, 1040, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
-        self.conv2 = nn.Conv2d(1040, 520, kernel_size=3)
-        self.conv3 = nn.Conv2d(520, 260, kernel_size=3)
-        self.fc1 = nn.Linear(4160, 520)   
-        self.fc2 = nn.Linear(520, 10)  
+        self.conv1 = nn.Conv2d(1, 32, kernel_size=3) #Channels input: 1, c output: 48, filter of size 3
+        self.norm1 = nn.BatchNorm2d(32)
+        self.conv2 = nn.Conv2d(32, 32, kernel_size=3)
+        self.norm2 = nn.BatchNorm2d(32)
+        self.conv3 = nn.Conv2d(32, 64, kernel_size=5)
+        self.norm3 = nn.BatchNorm2d(64)
+        self.fc1 = nn.Linear(576, 256)   
+        self.fc2 = nn.Linear(256, 10)   
     
     def forward(self, x, verbose=False):
         if verbose: "Output Layer by layer"
         if verbose: print(x.size())
-        x = F.max_pool2d(F.relu(self.conv1(x)), 2) #Perform a Maximum pooling operation over the nonlinear responses of the convolutional layer
+        x = self.norm1(F.max_pool2d(F.relu(self.conv1(x)), 2)) #Perform a Maximum pooling operation over the nonlinear responses of the convolutional layer
         if verbose: print(x.size())
-        x = F.max_pool2d(F.relu(self.conv2(x)), 2)
+        x = self.norm2(F.max_pool2d(F.relu(self.conv2(x)), 2))
         if verbose: print(x.size())
         x = F.dropout(x, 0.50, training=self.training)#Try to control overfit on the network, by randomly excluding 25% of neurons on the last #layer during each iteration
         if verbose: print(x.size())
-        x = F.max_pool2d(F.relu(self.conv3(x)), 2)
+        x = self.norm3(F.max_pool2d(F.relu(self.conv3(x)), 2))
         if verbose: print(x.size())
         x = F.dropout(x, 0.50, training=self.training)
         if verbose: print(x.size())
         #ipdb.set_trace()
-        x = x.view(-1, 4160)
+        x = x.view(-1, 576)
         if verbose: print(x.size())
         x = F.relu(self.fc1(x))
         if verbose: print(x.size())
         x = self.fc2(x)
         if verbose: print(x.size())
         return x
-
     def training_params(self):
-        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0)
+        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.1, momentum=0.9, weight_decay=0.00001)
         self.Loss = nn.CrossEntropyLoss()
         
 #def get_data(batch_size):
@@ -81,7 +84,7 @@ def get_data():
         tar.extractall()
         tar.close()
         print('Unzipping done.') 
-            
+        
     # angry, disgust, fear, happy, sad, surprise, neutral
     with open("fer2013.csv") as f:
         content = f.readlines()
@@ -119,15 +122,42 @@ def get_data():
     y_train = y_train.reshape(y_train.shape[0], 1)
     y_test = y_test.reshape(y_test.shape[0], 1)
 
+    import cv2
+    #Augmentating images with reflection
+    xtrain_flip= np.zeros((28709,48,48))
+    for i in range(len(x_train)):
+        xtrain_flip[i] = np.fliplr(x_train[i])
+            
+    x_train = np.concatenate((x_train, xtrain_flip), axis=0)
+    y_expand1 = y_train
+    y_expand2 = y_train
+    y_expand3 = y_train
+    y_train =  np.concatenate((y_train, y_expand1), axis=0)
+    #Augmentating images with rotation
+    rot1 = cv2.getRotationMatrix2D((24,24), 20, 1)  
+    xtrain_rot1= np.zeros((28709,48,48))
+    for i in range(28709):
+        xtrain_rot1[i] = cv2.warpAffine(x_train[i], rot1, (48, 48))
+
+    rot2 = cv2.getRotationMatrix2D((24,24), -20, 1)
+    xtrain_rot2= np.zeros((28709,48,48))
+    for i in range(28709):
+        xtrain_rot2[i] = cv2.warpAffine(x_train[i], rot2, (48, 48))
+   
+    x_train = np.concatenate((x_train, xtrain_rot1), axis=0)
+    y_train =  np.concatenate((y_train, y_expand2), axis=0)
+
+    x_train = np.concatenate((x_train, xtrain_rot2), axis=0)
+    y_train =  np.concatenate((y_train, y_expand3), axis=0)
+
     print(x_train.shape[0], 'train samples')
-    print(x_test.shape[0], 'test samples')
-    #test will be used fot validation
+    print(x_test.shape[0], 'validation samples')
+    #test will be used for validation
     return x_train, y_train, x_test, y_test
 
 def get_test_data():
     import cv2
     import os
-    import face_recognition
     from tqdm import tqdm
 
     cwd = os.getcwd()
@@ -150,8 +180,9 @@ def get_test_data():
         zip_Archivo.extractall(cwd)
         zip_Archivo.close()
         print('Unzipping done.')
-    
+        
     images = np.zeros((1610,48,48))
+    import face_recognition
     for i in tqdm(range(1610), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
         filename = os.listdir('Emotions_test')[i]
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
@@ -164,8 +195,6 @@ def get_test_data():
             face_locations[0][0]+face_locations[0][2]]
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
         images[i,:,:]= img
-    return images
-
 def train(data_loader, model, epoch):
     model.train()
     loss_cum = []
@@ -200,30 +229,26 @@ def val(data_loader, model, epoch):
         Acc += arg_max_out.long().eq(target.data.cpu().long()).sum()
     
     print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
-
+ 
 def test(data_loader, model, epoch):
-    model.eval()    
+    model.eval()  
+    file = open("convEmotions_Results.txt","w")
     for batch_idx, (data) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
         data = data.to(device).requires_grad_(False)
         output = model(data)
-        open("convEmotions_Results.txt","w+")
-        with open('convEmotions_Results.txt', 'a+') as f:
-            for item in output:
-                filename = os.listdir('Emotions_test')[item]
-                f.write("%s\n" % filename,',',item)
-                f.close
-        print("TEST Results printed.")
-    
+        for i in range(len(output)):
+           filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
+           file.write(filename + ","+ output +"\n") 
+    file.close()         
+
 if __name__=='__main__':
-    epochs=40
-    batch_size=50
+    epochs=20
+    batch_size=30 
     TEST=True
     x_train, y_train, x_val, y_val = get_data()
-    x_test = get_test_data()
     
     x_train = x_train[:, np.newaxis]
     x_val =  x_val[:, np.newaxis]
-    x_test = x_test[:,np.newaxis]
     
     tensor_x_train = torch.stack([torch.Tensor(i) for i in x_train]) # transform to torch tensors
     tensor_y_train = torch.stack([torch.Tensor(i) for i in y_train])
@@ -235,11 +260,7 @@ if __name__=='__main__':
     tensor_y_val = torch.stack([torch.Tensor(i) for i in y_val])
     
     val_dataset = utils.TensorDataset(tensor_x_val,tensor_y_val) # create your dataset
-    val_dataloader = utils.DataLoader(val_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
-
-    tensor_x_test = torch.stack([torch.Tensor(i) for i in x_test])
-    test_dataset = utils.TensorDataset(tensor_x_test) # create your dataset
-    test_dataloader = utils.DataLoader(test_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
+    val_dataloader = utils.DataLoader(val_dataset, batch_size=batch_size,shuffle=False) # create your dataloader
     
     model = Net()
     model.to(device)
@@ -252,4 +273,11 @@ if __name__=='__main__':
         train(train_dataloader, model, epoch)
         val(val_dataloader, model, epoch)
 
-    if TEST: TEST(test_dataloader, model, epoch)
+    if TEST: 
+        x_test = get_test_data()
+        x_test = x_test[:,np.newaxis]
+        tensor_x_test = torch.stack([torch.Tensor(i) for i in x_test])
+        test_dataset = utils.TensorDataset(tensor_x_test) # create your dataset
+        test_dataloader = utils.DataLoader(test_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
+        test(test_dataloader, model, epoch)
+        print("TEST Results printed.")
