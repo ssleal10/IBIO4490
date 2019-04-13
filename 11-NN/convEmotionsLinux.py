@@ -183,20 +183,17 @@ def get_test_data():
         
     images = np.zeros((1610,48,48))
     import face_recognition
-    for i in tqdm(range(1610), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
+    for i in tqdm(range(1), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
         filename = os.listdir('Emotions_test')[i]
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
         face_locations = face_recognition.face_locations(image)
-        
+     
         #img = cv2.imread(os.path.join('Emotions_test',filename))
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         #face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-        #faces = face_cascade.detectMultiScale(img,1.1,5,0)
-        
+        #faces = face_cascade.detectMultiScale(img,1.1,5,0)   
         crop = gray[face_locations[0][0]:face_locations[0][0]+face_locations[0][2],face_locations[0][3]:
             face_locations[0][3]+face_locations[0][1]]
-        import matplotlib.pyplot as plt 
-        plt.imshow(crop)
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
         images[i,:,:]= img
 def train(data_loader, model, epoch):
