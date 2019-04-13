@@ -158,7 +158,6 @@ def get_data():
 def get_test_data():
     import cv2
     import os
-    from tqdm import tqdm
 
     cwd = os.getcwd()
     if os.path.isfile(cwd+'/'+'Emotions_test.zip') == False:
@@ -192,13 +191,12 @@ def get_test_data():
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         #face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
         #faces = face_cascade.detectMultiScale(img,1.1,5,0)   
-        crop = gray[face_locations[0][0]:face_locations[0][0]+face_locations[0][2],face_locations[0][3]:
-            face_locations[0][3]+face_locations[0][1]]
+        crop = gray[face_locations[0][0]:face_locations[0][2],face_locations[0][3]:face_locations[0][1]]
         import matplotlib.pyplot as plt
         plt.imshow(crop)
         plt.show()
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
-        images[i,:,:]= img
+        images[i]= img
 def train(data_loader, model, epoch):
     model.train()
     loss_cum = []
