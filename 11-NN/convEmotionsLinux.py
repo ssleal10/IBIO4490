@@ -187,6 +187,7 @@ def get_test_data():
         filename = os.listdir('Emotions_test')[i]
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
         face_locations = face_recognition.face_locations(image)
+        print('faceloc',face_locations)
         #img = cv2.imread(os.path.join('Emotions_test',filename))
         img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         #face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
