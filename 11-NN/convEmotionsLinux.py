@@ -181,13 +181,12 @@ def get_test_data():
         print('Unzipping done.')
         
     images = np.zeros((1610,48,48))
-    files = []
     import face_recognition
     for i in tqdm.tqdm(range(1), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
         filename = os.listdir('Emotions_test')[i]
+        print('file:',filename)
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
         face_locations = face_recognition.face_locations(image)
-     
         #img = cv2.imread(os.path.join('Emotions_test',filename))
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         #face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
@@ -195,7 +194,6 @@ def get_test_data():
         crop = gray[face_locations[0][0]:face_locations[0][2],face_locations[0][3]:face_locations[0][1]]
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
         images[i]= img
-        files[i] = filename
         return images,files
 def train(data_loader, model, epoch):
     model.train()
@@ -240,6 +238,7 @@ def test(data_loader, model, epoch,names):
         output = model(data)
         for i in range(len(output)):
            filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
+        print('file:',filename)
            file.write(filename + ","+ output +"\n") 
     file.close()         
 
