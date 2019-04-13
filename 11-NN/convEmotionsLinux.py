@@ -243,7 +243,7 @@ def test(data_loader, model, epoch):
     file.close()         
 
 if __name__=='__main__':
-    epochs=5
+    epochs=1
     batch_size=50 
     TEST=True
     x_train, y_train, x_val, y_val = get_data()
