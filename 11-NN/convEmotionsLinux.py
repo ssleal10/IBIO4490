@@ -194,6 +194,8 @@ def get_test_data():
         
         crop = img[face_locations[0][1]:face_locations[0][1]+face_locations[0][3],face_locations[0][0]:
             face_locations[0][0]+face_locations[0][2]]
+        import matplotlib.pyplot as plt 
+        plt.imshow(crop)
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
         images[i,:,:]= img
 def train(data_loader, model, epoch):
