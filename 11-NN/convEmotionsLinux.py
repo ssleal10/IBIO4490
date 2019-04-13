@@ -184,6 +184,7 @@ def get_test_data():
     import face_recognition
     for i in tqdm.tqdm(range(1), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
         filename = os.listdir('Emotions_test')[i]
+        print('filename',filename)
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
         face_locations = face_recognition.face_locations(image)
      
@@ -278,7 +279,7 @@ if __name__=='__main__':
 
     if TEST: 
         x_test = get_test_data()
-        print('xtest',x_test)
+        print('xtest',x_test.shape)
         y_test = np.zeros((x_test.shape[0]))
         x_test = x_test[:,np.newaxis]
         y_test = y_test[:,np.newaxis]
