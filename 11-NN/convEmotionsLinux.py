@@ -52,7 +52,7 @@ class Net(nn.Module):
         if verbose: print(x.size())
         return x
     def training_params(self):
-        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.1, momentum=0.9, weight_decay=0.00001)
+        self.optimizer = torch.optim.SGD(self.parameters(), lr=0.0001, momentum=0.9, weight_decay=0.00001)
         self.Loss = nn.CrossEntropyLoss()
         
 #def get_data(batch_size):
