@@ -181,10 +181,10 @@ def get_test_data():
         print('Unzipping done.')
         
     images = np.zeros((1610,48,48))
+    files = []
     import face_recognition
     for i in tqdm.tqdm(range(1), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
         filename = os.listdir('Emotions_test')[i]
-        print('filename',filename)
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
         face_locations = face_recognition.face_locations(image)
      
@@ -193,12 +193,10 @@ def get_test_data():
         #face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
         #faces = face_cascade.detectMultiScale(img,1.1,5,0)   
         crop = gray[face_locations[0][0]:face_locations[0][2],face_locations[0][3]:face_locations[0][1]]
-        import matplotlib.pyplot as plt
-        plt.imshow(crop)
-        plt.show()
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
         images[i]= img
-        return images
+        files[i] = filename
+        return images,files
 def train(data_loader, model, epoch):
     model.train()
     loss_cum = []
@@ -234,7 +232,7 @@ def val(data_loader, model, epoch):
     
     print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
  
-def test(data_loader, model, epoch):
+def test(data_loader, model, epoch,names):
     model.eval()  
     file = open("convEmotions_Results.txt","w")
     for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
@@ -278,7 +276,7 @@ if __name__=='__main__':
         val(val_dataloader, model, epoch)
 
     if TEST: 
-        x_test = get_test_data()
+        x_test,files = get_test_data()
         print('xtest',x_test.shape)
         y_test = np.zeros((x_test.shape[0]))
         x_test = x_test[:,np.newaxis]
@@ -286,7 +284,7 @@ if __name__=='__main__':
         tensor_x_test = torch.stack([torch.Tensor(i) for i in x_test])
         tensor_y_test = torch.stack([torch.Tensor(i) for i in y_test])
         test_dataset = utils.TensorDataset(tensor_x_test,tensor_y_test) # create your dataset
-        test_dataloader = utils.DataLoader(test_dataset, batch_size=1610, shuffle=False) # create your dataloader
-        test(test_dataloader, model, epoch)
+        test_dataloader = utils.DataLoader(test_dataset, batch_size=batch_size, shuffle=False) # create your dataloader
+        test(test_dataloader, model, epoch,names)
         print("TEST Results printed.")
 
