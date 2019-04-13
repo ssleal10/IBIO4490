@@ -238,7 +238,7 @@ def test(data_loader, model, epoch,names):
         output = model(data)
         for i in range(len(output)):
            filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
-        print('file:',filename)
+           print('file:',filename)
            file.write(filename + ","+ output +"\n") 
     file.close()         
 
