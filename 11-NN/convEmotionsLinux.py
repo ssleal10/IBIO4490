@@ -238,12 +238,12 @@ def test(data_loader, model, epoch):
         output = model(data)
         print('out',output)
         print('out',output.shape)
-        prediction =np.argmax(output.eval(), axis=1)
+        prediction =tensor.max(output,1)
         print('pred',prediction)
         for i in range(len(output)):
            filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
            print('file:',filename)
-           file.write(filename + ","+ output.numpy() +"\n") 
+           file.write(filename + ","+ prediction +"\n") 
     file.close()         
 
 if __name__=='__main__':
