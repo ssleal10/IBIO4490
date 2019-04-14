@@ -6,7 +6,6 @@ import numpy as np
 import tqdm
 import torch.utils.data as utils
 import os
-import torchvision
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print('Device:',device)
 def print_network(model, name):
@@ -182,7 +181,7 @@ def get_test_data():
         
     images = np.zeros((1610,48,48))
     import face_recognition
-    for i in tqdm.tqdm(range(1), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
+    for i in tqdm.tqdm(range(1610), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
         filename = os.listdir('Emotions_test')[i]
         print('file:',filename)
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
@@ -246,7 +245,7 @@ def test(data_loader, model, epoch):
     file.close()         
 
 if __name__=='__main__':
-    epochs=1
+    epochs=200
     batch_size=50 
     TEST=True
     x_train, y_train, x_val, y_val = get_data()
