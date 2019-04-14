@@ -231,9 +231,9 @@ def val(data_loader, model, epoch):
     print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
  
 def test(data_loader, model, epoch):
-    model.eval()  
+    model.eval() 
+    file = open("convEmotions_Results.txt","w")
     for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
-        file = open("convEmotions_Results.txt","w")
         data = data.to(device).requires_grad_(False)
         output = model(data)
         _,prediction =torch.max(output,1)
@@ -242,8 +242,8 @@ def test(data_loader, model, epoch):
            filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
            print('file:',filename)
            print('res:',prediction[i].item()
-           file.write(filename + ","+ prediction[i].item() +"\n") 
-        file.close()         
+           file.write(filename + ","+ prediction[i] +"\n") 
+    file.close()         
 
 if __name__=='__main__':
     epochs=1
