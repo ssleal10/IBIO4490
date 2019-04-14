@@ -237,11 +237,9 @@ def test(data_loader, model, epoch):
         data = data.to(device).requires_grad_(False)
         output = model(data)
         _,prediction =torch.max(output,1)
-        print('pred',prediction)
         for i in range(len(prediction)):
            filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
-           print('file:',filename)
-           print('res:',prediction[i].item())
+           res = prediction[i].item()
            file.write(filename + "," +"\n") 
     file.close()         
 
