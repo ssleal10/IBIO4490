@@ -242,7 +242,7 @@ def test(data_loader, model, epoch):
            filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
            print('file:',filename)
            print('res:',prediction[i].item()
-           file.write(filename + ","+ prediction[i] +"\n") 
+           file.write(filename + "," +"\n") 
     file.close()         
 
 if __name__=='__main__':
