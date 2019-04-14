@@ -236,14 +236,12 @@ def test(data_loader, model, epoch):
     for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
         data = data.to(device).requires_grad_(False)
         output = model(data)
-        print('out',output)
-        print('out',output.shape)
         _,prediction =torch.max(output,1)
         print('pred',prediction)
-        for i in range(len(output)):
+        for i in range(len(prediction)):
            filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
            print('file:',filename)
-           file.write(filename + ","+ prediction +"\n") 
+           file.write(filename + ","+ prediction[i] +"\n") 
     file.close()         
 
 if __name__=='__main__':
