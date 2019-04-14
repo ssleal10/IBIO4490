@@ -238,7 +238,7 @@ def test(data_loader, model, epoch):
         output = model(data)
         print('out',output)
         print('out',output.shape)
-        prediction =tensor.max(output,1)
+        _,prediction =torch.max(output,1)
         print('pred',prediction)
         for i in range(len(output)):
            filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
