@@ -232,8 +232,8 @@ def val(data_loader, model, epoch):
  
 def test(data_loader, model, epoch):
     model.eval()  
-    file = open("convEmotions_Results.txt","w")
     for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
+        file = open("convEmotions_Results.txt","w")
         data = data.to(device).requires_grad_(False)
         output = model(data)
         _,prediction =torch.max(output,1)
@@ -243,7 +243,7 @@ def test(data_loader, model, epoch):
            print('file:',filename)
            print('res:',prediction[i].item()
            file.write(filename + ","+ prediction[i].item() +"\n") 
-    file.close()         
+        file.close()         
 
 if __name__=='__main__':
     epochs=1
