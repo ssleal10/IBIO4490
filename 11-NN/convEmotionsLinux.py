@@ -247,7 +247,7 @@ def test(data_loader, model, epoch):
 if __name__=='__main__':
     epochs=200
     batch_size=50 
-    TEST=True
+    TEST=False
     x_train, y_train, x_val, y_val = get_data()
     
     x_train = x_train[:, np.newaxis]
@@ -289,3 +289,4 @@ if __name__=='__main__':
         test(test_dataloader, model, epoch)
         print("TEST Results printed.")
 
+    torch.save(model,'finalModelCNNEmotions.pt')
