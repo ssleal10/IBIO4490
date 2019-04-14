@@ -241,7 +241,7 @@ def test(data_loader, model, epoch):
         for i in range(len(prediction)):
            filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
            res = prediction[i].item()
-           file.write('{0}{0} {1} {0}{0}'.format(os.linesep, filename + "," + str(res))
+           file.write('{0}{0} {1} {0}{0}'.format(os.linesep, filename + "," + str(res)))
            #file.write(filename + "," + str(res))
            file.write("\n")
     file.close()         
