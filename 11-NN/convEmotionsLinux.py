@@ -238,7 +238,7 @@ def test(data_loader, model, epoch):
         output = model(data)
         print('out',output)
         print('out',output.shape)
-        prediction =np.argmax(output.numpy(), axis=1)
+        prediction =np.argmax(output.eval(), axis=1)
         print('pred',prediction)
         for i in range(len(output)):
            filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
