@@ -232,7 +232,8 @@ def val(data_loader, model, epoch):
  
 def test(data_loader, model, epoch):
     model.eval() 
-    file = open("convEmotions_Results.txt","w")
+    open("convEmotions_Results.txt","w")
+    file = open("convEmotions_Results.txt","a")
     for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
         data = data.to(device).requires_grad_(False)
         output = model(data)
@@ -240,8 +241,7 @@ def test(data_loader, model, epoch):
         for i in range(len(prediction)):
            filename = os.listdir('Emotions_test')[(batch_size*epoch)+i]
            res = prediction[i].item()
-           file.write(filename + ',' + str(res)) 
-           file.write("\n")
+           file.write(filename + "," + str(res)+"\n")
     file.close()         
 
 if __name__=='__main__':
