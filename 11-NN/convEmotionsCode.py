@@ -166,7 +166,6 @@ def get_test_data():
     import face_recognition
     for i in tqdm.tqdm(range(1610), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
         filename = os.listdir('Emotions_test')[i]
-        print('file:',filename)
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
         face_locations = face_recognition.face_locations(image)
         #img = cv2.imread(os.path.join('Emotions_test',filename))
