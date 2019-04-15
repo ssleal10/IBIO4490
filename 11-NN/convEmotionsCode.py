@@ -176,7 +176,8 @@ def get_test_data():
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
         images[i]= img
         print('iter:',i)
-        return images
+        
+    return images
     
 def train(data_loader, model, epoch):
     model.train()
