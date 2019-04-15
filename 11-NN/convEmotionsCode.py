@@ -221,7 +221,7 @@ def test(data_loader, model, epoch):
         output = model(data)
         _,prediction =torch.max(output.data.cpu(),1)
         for i in range(len(prediction)):
-           filename = os.listdir('Emotions_test_crop')[(batch_size*batch_idx)+i]
+           filename = os.listdir('Emotions_test')[(batch_size*batch_idx)+i]
            #print('file:',filename)
            res = prediction[i].item()
            file.write(filename + "," + str(res)+":\n" )
