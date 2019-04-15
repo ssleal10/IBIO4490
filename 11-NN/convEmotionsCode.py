@@ -26,7 +26,7 @@ class Net(nn.Module):
         self.norm2 = nn.BatchNorm2d(4)
         self.conv3 = nn.Conv2d(4, 8, kernel_size=3)
         self.norm3 = nn.BatchNorm2d(8)
-        self.fc1 = nn.Linear(78, 32)   
+        self.fc1 = nn.Linear(72, 32)   
         self.fc2 = nn.Linear(32, 7)   
     
     def forward(self, x, verbose=False):
@@ -43,7 +43,7 @@ class Net(nn.Module):
         x = F.dropout(x, 0.50, training=self.training)
         if verbose: print(x.size())
         #ipdb.set_trace()
-        x = x.view(-1, 78)
+        x = x.view(-1, 72)
         if verbose: print(x.size())
         x = F.relu(self.fc1(x))
         if verbose: print(x.size())
