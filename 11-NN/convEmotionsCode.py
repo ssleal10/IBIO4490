@@ -164,7 +164,7 @@ def get_test_data():
         
     images = np.zeros((1610,48,48))
     import face_recognition
-    for i in tqdm.tqdm(range(1610), desc = "Detecting,cropping and resizing(48,48) test faces,wait..."):
+    for i in range(1610):
         filename = os.listdir('Emotions_test')[i]
         image = face_recognition.load_image_file(os.path.join('Emotions_test',filename))
         face_locations = face_recognition.face_locations(image)
@@ -175,6 +175,7 @@ def get_test_data():
         crop = gray[face_locations[0][0]:face_locations[0][2],face_locations[0][3]:face_locations[0][1]]
         img = cv2.resize(crop, dsize=(48, 48), interpolation=cv2.INTER_CUBIC)
         images[i]= img
+        print('iter:',i)
         return images
     
 def train(data_loader, model, epoch):
