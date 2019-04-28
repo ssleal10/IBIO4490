@@ -249,7 +249,7 @@ def test(data_loader, model, epoch):
     file.close()         
 
 if __name__=='__main__':
-    epochs=1
+    epochs=16
     batch_size=25
     TEST=True
     
@@ -271,7 +271,8 @@ if __name__=='__main__':
     for epoch in range(epochs): 
         train(celebA_loader_train, model, epoch)
         val(celebA_loader_val, model, epoch)
-
+    torch.save(model.state_dict(), 'SelfArch16.pth')
+    
     if TEST:
         celebA_images_test = CustomDatasetFromImages('annotations.csv',stage='test')
         celebA_loader_test = DataLoader(dataset=celebA_images_test,batch_size=1,shuffle=False)
