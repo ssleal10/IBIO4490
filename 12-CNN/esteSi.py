@@ -197,7 +197,7 @@ def train(data_loader, model, epoch):
         model.optimizer.step()
         loss_cum.append(loss.item())
     
-    print("Loss: %0.3f | Acc: %0.2f"%(np.array(loss_cum).mean()))
+    print("Loss: %0.3f"%(np.array(loss_cum).mean()))
     
 
 def val(data_loader, model, epoch):
@@ -213,7 +213,7 @@ def val(data_loader, model, epoch):
         loss_cum.append(loss.item())
         #_, arg_max_out = torch.max(output.data.cpu(), 1)
 
-    print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean()))
+    print("Loss: %0.3f"%(np.array(loss_cum).mean()))
  
 def test(data_loader, model):
     model.eval() 
