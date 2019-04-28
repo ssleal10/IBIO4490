@@ -242,7 +242,7 @@ def test(data_loader, model):
         filename=number_image+'.jpg'
         file.write(filename+",")
         for j in range(prediction.shape[1]):
-                res = (prediction[j]).long().item()
+                res = (prediction[0][j]).long().item()
                 file.write(str(res)+",")
         file.write(": \n") 
         cont = cont +1
