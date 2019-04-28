@@ -227,10 +227,10 @@ def val(data_loader, model, epoch):
     
     print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean(), float(TP/all_detections)))
  
-def test(data_loader, model, epoch):
+def test(data_loader, model):
     model.eval() 
-    open("VGG_Results.txt","w")
-    file = open("VGG_Results.txt","a")
+    open("SelfArch16_Results.txt","w")
+    file = open("SelfArch16_Results.txt","a")
     cont = 1;
     for batch_idx, (data,_) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
         data = data.to(device).requires_grad_(False)
@@ -280,5 +280,5 @@ if __name__=='__main__':
         #model.eval()
         celebA_images_test = CustomDatasetFromImages('annotations.csv',stage='test')
         celebA_loader_test = DataLoader(dataset=celebA_images_test,batch_size=1,shuffle=False)
-        test(celebA_loader_test, model, epoch)          
+        test(celebA_loader_test, model)          
         print("TEST Results printed.")
