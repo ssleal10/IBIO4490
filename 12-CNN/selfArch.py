@@ -4,13 +4,12 @@ import torch
 import numpy as np
 import tqdm
 #import torch.utils.data as utils
-from sklearn.metrics import accuracy_score as ac
 #import matplotlib.pyplot as plt
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 import pandas as pd 
 from PIL import Image
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 print('Device:',device)
 def print_network(model, name):
     num_params=0
@@ -246,7 +245,7 @@ def test(data_loader, model, epoch):
     file.close()         
 
 if __name__=='__main__':
-    epochs=1
+    epochs=10
     batch_size=50
     TEST=True
     
