@@ -3,11 +3,13 @@ import torch.utils.model_zoo as model_zoo
 import torch
 import numpy as np
 import tqdm
-import torch.utils.data as utils
-from skimage import io
-from skimage.transform import resize
-import matplotlib.pyplot as plt
-import xlrd 
+#import torch.utils.data as utils
+from sklearn.metrics import accuracy_score as ac
+#import matplotlib.pyplot as plt
+from torch.utils.data import Dataset, DataLoader
+from torchvision import transforms
+import pandas as pd 
+from PIL import Image
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print('Device:',device)
 def print_network(model, name):
@@ -96,6 +98,63 @@ def make_layers(cfg, batch_norm=False):
             in_channels = v
     return nn.Sequential(*layers)
 
+class CustomDatasetFromImages(Dataset):
+    def __init__(self, csv_path,stage):
+        """
+        Args:
+            csv_path (string): path to csv file
+            img_path (string): path to the folder where images are
+            transform: pytorch transforms for transforms and tensor conversion
+        """
+        # Transforms
+        self.to_tensor = transforms.ToTensor()
+        # Read the csv file
+        self.data_info = pd.read_csv(csv_path, header=None)
+        if stage == 'train':
+        # First column contains the image paths
+            self.image_arr = np.asarray(self.data_info.iloc[1:162771, 0])
+            # Second column is the labels
+            self.label_arr = np.asarray(self.data_info.iloc[1:162771, 1:11]).astype(np.int32)
+            self.label_arr = np.where(self.label_arr>0,1,0)
+            # Calculate len
+            self.data_len = 162770
+        elif stage == 'val':
+        # First column contains the image paths
+            self.image_arr = np.asarray(self.data_info.iloc[162771:182638, 0])
+            # Second column is the labels
+            self.label_arr = np.asarray(self.data_info.iloc[162771:182638, 1:11]).astype(np.int32)
+            self.label_arr = np.where(self.label_arr>0,1,0)
+            # Calculate len
+            self.data_len = 19867
+            
+        elif stage == 'test':
+        # First column contains the image paths
+            self.image_arr = np.asarray(self.data_info.iloc[182638:202600, 0])
+            # Second column is the labels
+            self.label_arr = np.asarray(self.data_info.iloc[182638:202600, 1:11]).astype(np.int32)
+            self.label_arr = np.where(self.label_arr>0,1,0)
+            # Calculate len
+            self.data_len = 19962 
+            
+
+    def __getitem__(self, index):
+        # Get image name from the pandas df
+        single_image_name = self.image_arr[index]
+        # Open image
+        img_as_img = Image.open('img_align_celeba'+'/'+single_image_name)
+
+        # Transform image to tensor
+        img_as_tensor = self.to_tensor(img_as_img)
+        
+
+        # Get label(class) of the image based on the cropped pandas column
+        single_image_label = self.label_arr[index]
+        #single_image_label = self.to_tensor(single_image_label)
+        
+        return (img_as_tensor, single_image_label)
+
+    def __len__(self):
+        return self.data_len
 
 cfg = {
     'A': [64, 'M', 128, 'M', 192, 'M', 256, 'M', 256, 'M'],
@@ -127,142 +186,6 @@ def vgg11_bn(pretrained=False, **kwargs):
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['vgg11_bn']))
     return model
-
-def get_data():
-    num_train_images = 20
-    num_val_images = 20
-    
-    train_images = np.zeros((num_train_images,224,224,3))
-    
-    annotations_bangs_train = []
-    annotations_blackHair_train = []
-    annotations_blondeHair_train = []
-    annotations_brownHair_train = []
-    annotations_eyeGlasses_train = []
-    annotations_grayHair_train = []
-    annotations_male_train = []
-    annotations_paleSkin_train = []
-    annotations_smiling_train = []
-    annotations_young_train = []
-    
-    for i in tqdm.tqdm(range(num_train_images), desc = "Getting train data."):
-        number_image = '{0:06}'.format(i+1)
-        name_image='img_align_celeba'+'/'+number_image+'.jpg'
-        img = io.imread(name_image)
-        #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img_resized = resize(img, (224, 224),anti_aliasing=True,mode='constant')
-        train_images[i][:][:][:]= img_resized
-        annotations_bangs_train.append(sheet.cell_value(i+1, 6))
-        annotations_blackHair_train.append(sheet.cell_value(i+1, 9))
-        annotations_blondeHair_train.append(sheet.cell_value(i+1, 10))
-        annotations_brownHair_train.append(sheet.cell_value(i+1, 12))
-        annotations_eyeGlasses_train.append(sheet.cell_value(i+1, 16))
-        annotations_grayHair_train.append(sheet.cell_value(i+1, 18))
-        annotations_male_train.append(sheet.cell_value(i+1, 21))
-        annotations_paleSkin_train.append(sheet.cell_value(i+1, 27))
-        annotations_smiling_train.append(sheet.cell_value(i+1, 32))
-        annotations_young_train.append(sheet.cell_value(i+1, 40))
-    
-    
-    annotations_train = np.column_stack((annotations_bangs_train, annotations_blackHair_train,
-    annotations_blondeHair_train,annotations_brownHair_train,annotations_eyeGlasses_train,
-    annotations_grayHair_train,annotations_male_train, annotations_paleSkin_train,
-    annotations_smiling_train, annotations_young_train))
-    
-    annotations_train = np.where(annotations_train>0,1,0)
-             
-    val_images = np.zeros(((num_val_images),224,224,3))
-    
-    annotations_bangs_val = []
-    annotations_blackHair_val = []
-    annotations_blondeHair_val = []
-    annotations_brownHair_val = []
-    annotations_eyeGlasses_val = []
-    annotations_grayHair_val = []
-    annotations_male_val = []
-    annotations_paleSkin_val = []
-    annotations_smiling_val = []
-    annotations_young_val = []
-    
-    #for i in range(162770,182637):
-    for i in tqdm.tqdm(range(162770,162770+num_val_images), desc = "Getting val data."):
-        number_image = '{0:06}'.format(i+1)
-        name_image='img_align_celeba'+'/'+number_image+'.jpg'
-        img = io.imread(name_image)
-        #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img_resized = resize(img, (224, 224),anti_aliasing=True,mode='constant')
-        val_images[i-162770][:][:][:]= img_resized   
-        annotations_bangs_val.append(sheet.cell_value(i+1, 6))
-        annotations_blackHair_val.append(sheet.cell_value(i+1, 9))
-        annotations_blondeHair_val.append(sheet.cell_value(i+1, 10))
-        annotations_brownHair_val.append(sheet.cell_value(i+1, 12))
-        annotations_eyeGlasses_val.append(sheet.cell_value(i+1, 16))
-        annotations_grayHair_val.append(sheet.cell_value(i+1, 18))
-        annotations_male_val.append(sheet.cell_value(i+1, 21))
-        annotations_paleSkin_val.append(sheet.cell_value(i+1, 27))
-        annotations_smiling_val.append(sheet.cell_value(i+1, 32))
-        annotations_young_val.append(sheet.cell_value(i+1, 40))
-    
-    
-    annotations_val = np.column_stack((annotations_bangs_val, annotations_blackHair_val,
-    annotations_blondeHair_val,annotations_brownHair_val,annotations_eyeGlasses_val,
-    annotations_grayHair_val,annotations_male_val, annotations_paleSkin_val,
-    annotations_smiling_val, annotations_young_val))
-    
-    annotations_val = np.where(annotations_val>0,1,0)
-       
-    return train_images,annotations_train,val_images,annotations_val
-def get_test_data():
-    
-        #test_images = np.zeros(((202599-182637),224,224,3))
-    #for i in range(182637,202599):
-        #number_image = '{0:06}'.format(i+1)
-        #name_image='img_align_celeba'+'/'+number_image+'.jpg'
-        #img = io.imread(name_image)
-        #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        #img_resized = resize(img, (224, 224),anti_aliasing=True,mode='constant')
-        #test_images[i-182637][:][:][:]= img_resized
-    num_test_images = 19962
-    #test_images = np.zeros(((202599-182637),224,224,3))
-    test_images = np.zeros(((num_test_images),224,224,3))
-    
-    annotations_bangs_test = []
-    annotations_blackHair_test = []
-    annotations_blondeHair_test = []
-    annotations_brownHair_test = []
-    annotations_eyeGlasses_test = []
-    annotations_grayHair_test = []
-    annotations_male_test = []
-    annotations_paleSkin_test = []
-    annotations_smiling_test = []
-    annotations_young_test = []
-    
-    #for i in tqdm.tqdm(range(182637,202599), desc = "Getting test data."):
-    for i in tqdm.tqdm(range(182637,182637+num_test_images), desc = "Getting test data."):
-        number_image = '{0:06}'.format(i+1)
-        name_image='img_align_celeba'+'/'+number_image+'.jpg'
-        img = io.imread(name_image)
-        #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img_resized = resize(img, (224, 224),anti_aliasing=True,mode='constant')
-        test_images[i-182637][:][:][:]= img_resized  
-        annotations_bangs_test.append(sheet.cell_value(i+1, 6))
-        annotations_blackHair_test.append(sheet.cell_value(i+1, 9))
-        annotations_blondeHair_test.append(sheet.cell_value(i+1, 10))
-        annotations_brownHair_test.append(sheet.cell_value(i+1, 12))
-        annotations_eyeGlasses_test.append(sheet.cell_value(i+1, 16))
-        annotations_grayHair_test.append(sheet.cell_value(i+1, 18))
-        annotations_male_test.append(sheet.cell_value(i+1, 21))
-        annotations_paleSkin_test.append(sheet.cell_value(i+1, 27))
-        annotations_smiling_test.append(sheet.cell_value(i+1, 32))
-        annotations_young_test.append(sheet.cell_value(i+1, 40))
-    
-    annotations_test = np.column_stack((annotations_bangs_test, annotations_blackHair_test,
-    annotations_blondeHair_test,annotations_brownHair_test,annotations_eyeGlasses_test,
-    annotations_grayHair_test,annotations_male_test, annotations_paleSkin_test,
-    annotations_smiling_test, annotations_young_test))
-    
-    annotations_test = np.where(annotations_test>0,1,0)
-    return test_images, annotations_test
     
 def train(data_loader, model, epoch):
     model.train()
@@ -278,12 +201,11 @@ def train(data_loader, model, epoch):
         loss.backward()
         model.optimizer.step()
         loss_cum.append(loss.item())
-        #_, arg_max_out = torch.max(output.data.cpu(), 1)
         prediction = torch.where(output.data.cpu() > 0, torch.Tensor([1]), torch.Tensor([0]))
-        num = torch.eq(target.data.cpu(),prediction)
-        Acc += num.sum()
+        Acc += (torch.eq(target.data.cpu().long(),prediction.long())).sum()
     
-    print("Loss: %0.3f | Acc: %0.2f"%(np.array(loss_cum).mean(), float(Acc)))
+    print("Loss: %0.3f | Acc: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
+    
 
 def val(data_loader, model, epoch):
     model.eval()
@@ -297,28 +219,27 @@ def val(data_loader, model, epoch):
         loss = model.Loss(output,target)   
         loss_cum.append(loss.item())
         #_, arg_max_out = torch.max(output.data.cpu(), 1)
-        prediction = torch.where(output.data.cpu() > 0, torch.Tensor([1]), torch.Tensor([0]))
-        num = torch.eq(target.data.cpu(),prediction)        
-        Acc += num.sum()
+        prediction = torch.where(output.data.cpu() > 0, torch.Tensor([1]), torch.Tensor([0]))      
+        Acc += (torch.eq(target.data.cpu().long(),prediction.long())).sum()
     
-    print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean(), float(Acc)))
+    print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
  
 def test(data_loader, model, epoch):
     model.eval() 
     open("VGG_Results.txt","w")
     file = open("VGG_Results.txt","a")
-    for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
+    for batch_idx, (data,_) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
         data = data.to(device).requires_grad_(False)
-        #target = target.type(torch.FloatTensor).squeeze(1).to(device).requires_grad_(False)
+
         output = model(data)
         prediction = torch.where(output.data.cpu() > 0, torch.Tensor([1]), torch.Tensor([0]))
         cont = 1;
         for i in range(prediction.shape[0]):
             number_image = '{0:06}'.format(182637+cont)
-            filename='img_align_celeba'+'/'+number_image+'.jpg'
+            filename=number_image+'.jpg'
             file.write(filename+",")
             for j in range(prediction.shape[1]):
-                res = prediction[i][j].item()
+                res = prediction[i][j].item().uint8()
                 file.write(str(res)+",")
             file.write(":\n") 
             cont = cont +1
@@ -326,68 +247,30 @@ def test(data_loader, model, epoch):
 
 if __name__=='__main__':
     epochs=1
-    batch_size=1
+    batch_size=50
     TEST=True
-    #Reading Annotations.xlsx excel file (same that list_attr_celeba but separating by cells using ,):
-    print('Getting annotations...')
-    loc = ("annotations.xlsx") 
-    wb = xlrd.open_workbook(loc) 
-    sheet = wb.sheet_by_index(0) 
-    print('Annotations obtained.')
-    x_train, y_train, x_val, y_val = get_data()
     
-    x_train = np.swapaxes(x_train,1,3)
-    x_val = np.swapaxes(x_val,1,3)
+
+    celebA_images_train = CustomDatasetFromImages('annotations.csv',stage='train')
+    celebA_loader_train = DataLoader(dataset=celebA_images_train,batch_size=batch_size,shuffle=True)
     
-    tensor_x_train = torch.stack([torch.Tensor(i) for i in x_train]) # transform to torch tensors
-    tensor_y_train = torch.stack([torch.Tensor(i) for i in y_train])
+    celebA_images_val = CustomDatasetFromImages('annotations.csv',stage='val')
+    celebA_loader_val = DataLoader(dataset=celebA_images_val,batch_size=batch_size,shuffle=False)
     
-    train_dataset = utils.TensorDataset(tensor_x_train,tensor_y_train) # create your dataset
-    train_dataloader = utils.DataLoader(train_dataset, batch_size=batch_size, shuffle=True) # create your dataloader
-    
-    tensor_x_val = torch.stack([torch.Tensor(i) for i in x_val]) # transform to torch tensors
-    tensor_y_val = torch.stack([torch.Tensor(i) for i in y_val])
-    
-    val_dataset = utils.TensorDataset(tensor_x_val,tensor_y_val) # create your dataset
-    val_dataloader = utils.DataLoader(val_dataset, batch_size=batch_size,shuffle=False) # create your dataloader
     
     model = vgg11_bn()
     model.to(device)
     model.training_params()
-    print_network(model, 'Conv network + vgg11_bn()')    
+    print_network(model, 'Conv network/vgg11_bn() Reduced')    
     #Exploring model
-    data, _ = next(iter(train_dataloader))
+    data, _ = next(iter(celebA_loader_train))
     _ = model(data.to(device).requires_grad_(False), verbose=True)
     for epoch in range(epochs): 
-        train(train_dataloader, model, epoch)
-        val(val_dataloader, model, epoch)
+        train(celebA_loader_train, model, epoch)
+        val(celebA_loader_val, model, epoch)
 
     if TEST:
-        cont = 1;
-        for i in tqdm.tqdm(range(182637,202599,2), desc = "Getting test data."):
-            test_images = np.zeros((2,224,224,3))
-            
-            number_image = '{0:06}'.format(i+1)
-            name_image='img_align_celeba'+'/'+number_image+'.jpg'
-            img = io.imread(name_image)
-            #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            img_resized = resize(img, (224, 224),anti_aliasing=True,mode='constant')
-            img_t = torch.stack([torch.Tensor(img_resized)])
-            image = torch.autograd.Variable(img_t).cuda(0)
-            output = model(image)
-
-            open("VGG_Results.txt","w")
-            file = open("VGG_Results.txt","a")
-            prediction = torch.where(output.data.cpu() > 0, torch.Tensor([1]), torch.Tensor([0]))
-            for p in range(prediction.shape[0]):
-                number_image = '{0:06}'.format(182637+cont)
-                filename= number_image
-                file.write(filename+",")
-                for j in range(prediction.shape[1]):
-                    res = prediction[p][j].item()
-                    file.write(str(res)+",")
-                file.write(":\n") 
-                cont = cont +1
-            file.close()  
-            
+        celebA_images_test = CustomDatasetFromImages('annotations.csv',stage='test')
+        celebA_loader_test = DataLoader(dataset=celebA_images_test,batch_size=1,shuffle=False)
+        test(celebA_loader_test, model, epoch)          
         print("TEST Results printed.")
