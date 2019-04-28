@@ -264,7 +264,7 @@ if __name__=='__main__':
         
     if TEST:
         model = vgg11_bn()
-        model.load_state_dict(torch.load('SelfArch16_2.pth',map_location='cuda:0'))
+        model.load_state_dict(torch.load('SelfArch16_2.pth',map_location='cuda:1'))
         model.to(device)
         #model.eval()
         celebA_images_test = CustomDatasetFromImages('annotations.csv',stage='test')
