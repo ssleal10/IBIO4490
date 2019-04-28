@@ -232,7 +232,7 @@ def test(data_loader, model):
     open("SelfArch16_Results.txt","w")
     file = open("SelfArch16_Results.txt","a")
     cont = 1;
-    for batch_idx, (data,_) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
+    for batch_idx, (data,_) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST]"):
         data = data.to(device).requires_grad_(False)
 
         output = model(data)
