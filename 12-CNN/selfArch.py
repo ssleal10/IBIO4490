@@ -9,7 +9,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 import pandas as pd 
 from PIL import Image
-device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 print('Device:',device)
 def print_network(model, name):
     num_params=0
@@ -227,26 +227,26 @@ def test(data_loader, model, epoch):
     model.eval() 
     open("VGG_Results.txt","w")
     file = open("VGG_Results.txt","a")
+    cont = 1;
     for batch_idx, (data,_) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TEST] Epoch: {}".format(epoch)):
         data = data.to(device).requires_grad_(False)
 
         output = model(data)
         prediction = torch.where(output.data.cpu() > 0, torch.Tensor([1]), torch.Tensor([0]))
-        cont = 1;
         for i in range(prediction.shape[0]):
             number_image = '{0:06}'.format(182637+cont)
             filename=number_image+'.jpg'
             file.write(filename+",")
             for j in range(prediction.shape[1]):
-                res = prediction[i][j].item().uint8()
+                res = (prediction[i][j]).long().item()
                 file.write(str(res)+",")
             file.write(":\n") 
             cont = cont +1
     file.close()         
 
 if __name__=='__main__':
-    epochs=10
-    batch_size=50
+    epochs=1
+    batch_size=25
     TEST=True
     
 
