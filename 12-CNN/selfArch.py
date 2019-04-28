@@ -189,7 +189,8 @@ def vgg11_bn(pretrained=False, **kwargs):
 def train(data_loader, model, epoch):
     model.train()
     loss_cum = []
-    Acc = 0
+    TP = 0
+    all_detections = 0
     for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[TRAIN] Epoch: {}".format(epoch)):
         data = data.to(device)
         target = target.type(torch.FloatTensor).squeeze(1).to(device)
@@ -201,15 +202,17 @@ def train(data_loader, model, epoch):
         model.optimizer.step()
         loss_cum.append(loss.item())
         prediction = torch.where(output.data.cpu() > 0, torch.Tensor([1]), torch.Tensor([0]))
-        Acc += (torch.eq(target.data.cpu().long(),prediction.long())).sum()
+        TP += (torch.eq(target.data.cpu().long(),prediction.long())).sum()
+        all_detections += (10*batch_size)
     
-    print("Loss: %0.3f | Acc: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
+    print("Loss: %0.3f | Acc: %0.2f"%(np.array(loss_cum).mean(), float(TP/all_detections)))
     
 
 def val(data_loader, model, epoch):
     model.eval()
     loss_cum = []
-    Acc = 0
+    TP = 0
+    all_detections = 0
     for batch_idx, (data,target) in tqdm.tqdm(enumerate(data_loader), total=len(data_loader), desc="[VAL] Epoch: {}".format(epoch)):
         data = data.to(device).requires_grad_(False)
         target = target.type(torch.FloatTensor).squeeze(1).to(device).requires_grad_(False)
@@ -219,9 +222,10 @@ def val(data_loader, model, epoch):
         loss_cum.append(loss.item())
         #_, arg_max_out = torch.max(output.data.cpu(), 1)
         prediction = torch.where(output.data.cpu() > 0, torch.Tensor([1]), torch.Tensor([0]))      
-        Acc += (torch.eq(target.data.cpu().long(),prediction.long())).sum()
+        TP += (torch.eq(target.data.cpu().long(),prediction.long())).sum()
+        all_detections += (10*batch_size)
     
-    print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean(), float(Acc*100)/len(data_loader.dataset)))
+    print("Loss Val: %0.3f | Acc Val: %0.2f"%(np.array(loss_cum).mean(), float(TP/all_detections)))
  
 def test(data_loader, model, epoch):
     model.eval() 
@@ -240,7 +244,7 @@ def test(data_loader, model, epoch):
             for j in range(prediction.shape[1]):
                 res = (prediction[i][j]).long().item()
                 file.write(str(res)+",")
-            file.write(":\n") 
+            file.write(": \n") 
             cont = cont +1
     file.close()         
 
