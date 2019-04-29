@@ -196,8 +196,7 @@ def demo(data_loader, model):
         prediction = torch.where(output.data.cpu() > 0, torch.Tensor([1]), torch.Tensor([0]))
 
         res = (prediction[0][:]).long()
-        print(data.cpu().shape)
-        plt.imshow(data.cpu())
+        plt.imshow(np.swapaxes(np.swapaxes(data.cpu()[0],0,1),1,2))
         plt.show()
         print('Prediction:',res)
         break
